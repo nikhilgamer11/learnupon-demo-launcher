@@ -1,103 +1,44 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Rocket, Shield, Globe, ChevronRight } from "lucide-react";
+// Initialize Icons
+lucide.createIcons();
 
-// The steps for the Launch Sandbox form
-const steps = [
-  { id: "01", title: "Target Portal", field: "subdomain", placeholder: "PORTAL-NAME" },
-  { id: "02", title: "Credentials", field: "apiKey", placeholder: "API USERNAME" },
-  { id: "03", title: "Secret Key", field: "apiPass", placeholder: "API PASSWORD" },
-  { id: "04", title: "Load Manifest", field: "courses", placeholder: "COURSES (COMMA-SEPARATED)" },
-];
+function launchSequence() {
+    // 1. Target the inputs
+    const portalInput = document.querySelector('input[placeholder="PORTAL NAME"]');
+    const statusMsg = document.querySelector('.heavy.text-orange-600.text-xs');
+    
+    // 2. Perform Validation
+    if (!portalInput.value || portalInput.value.length < 3) {
+        // Error Feedback
+        portalInput.classList.add('border-red-600');
+        statusMsg.innerText = "ERROR: INVALID PORTAL COORDINATES";
+        statusMsg.classList.replace('text-orange-600', 'text-red-600');
+        
+        // Vibration effect for error
+        document.getElementById('form-container').animate([
+            { transform: 'translateX(-5px)' },
+            { transform: 'translateX(5px)' }
+        ], { duration: 100, iterations: 3 });
+        
+        return;
+    }
 
-export default function FinishedLauncher() {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isLaunching, setIsLaunching] = useState(false);
+    // 3. Successful Validation -> Start Ignition
+    const overlay = document.getElementById('ignition');
+    overlay.style.display = 'flex';
+    
+    // Intense Screen Shake Logic
+    let intensity = 0;
+    const interval = setInterval(() => {
+        intensity = Math.min(intensity + 0.5, 15); // Build intensity over time
+        const x = (Math.random() - 0.5) * intensity;
+        const y = (Math.random() - 0.5) * intensity;
+        document.body.style.transform = `translate(${x}px, ${y}px)`;
+    }, 30);
 
-  return (
-    <div className="relative min-h-screen bg-black overflow-hidden font-sans">
-      
-      {/* 1. THE BACKGROUND: High-contrast rocket video */}
-      <div className="absolute inset-0 z-0">
-        <video autoPlay muted loop playsInline className="h-full w-full object-cover opacity-50 contrast-125 grayscale hover:grayscale-0 transition-all duration-1000">
-          <source src="videoplayback.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/80" />
-      </div>
-
-      {/* 2. THE HEADER: Luminous centered branding */}
-      <header className="absolute top-12 left-0 w-full flex flex-col items-center z-50">
-        <div className="flex flex-col items-center">
-          <img src="logo.jpeg" className="h-12 invert brightness-200 drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]" />
-          <p className="text-[10px] tracking-[1.2em] uppercase font-black text-white/70 mt-4">Demo Portal Launch</p>
-        </div>
-      </header>
-
-      {/* 3. THE INTERFACE: Editorial Rose Island Layout */}
-      <main className="relative z-10 flex flex-col justify-center min-h-screen px-6 lg:px-24">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentStep}
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 40 }}
-            className="max-w-4xl"
-          >
-            <span className="text-orange-600 font-black text-xs tracking-[0.6em] uppercase mb-4 block">STEP {steps[currentStep].id}</span>
-            <h1 className="text-7xl md:text-9xl font-black text-white uppercase tracking-tighter leading-none mb-12">
-              {steps[currentStep].title}<span className="text-orange-600">.</span>
-            </h1>
-
-            <div className="relative">
-              <input 
-                className="w-full bg-transparent border-b-4 border-white/20 py-6 text-4xl md:text-6xl text-white font-black uppercase outline-none focus:border-orange-600 transition-colors placeholder:text-white/5"
-                placeholder={steps[currentStep].placeholder}
-                autoFocus
-              />
-            </div>
-
-            <div className="mt-16">
-              {currentStep < steps.length - 1 ? (
-                <button 
-                  onClick={() => setCurrentStep(s => s + 1)}
-                  className="group flex items-center gap-4 text-white text-xl font-black uppercase tracking-widest hover:text-orange-600 transition-colors"
-                >
-                  Confirm Entry <ChevronRight className="group-hover:translate-x-2 transition-transform" />
-                </button>
-              ) : (
-                <button 
-                  onClick={() => setIsLaunching(true)}
-                  className="bg-orange-600 hover:bg-white hover:text-orange-600 px-12 py-8 text-2xl font-black uppercase tracking-widest text-white transition-all shadow-[0_0_50px_rgba(255,77,0,0.3)]"
-                >
-                  Initiate Launch
-                </button>
-              )}
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      </main>
-
-      {/* 4. THE TELEMETRY: Small technical details */}
-      <footer className="absolute bottom-12 left-12 right-12 flex justify-between items-end pointer-events-none opacity-40">
-        <div className="text-[10px] font-mono tracking-widest text-white leading-relaxed">
-          LAT: 44.1105 N<br />LON: 12.6105 E
-        </div>
-        <div className="text-[10px] font-mono tracking-widest text-white uppercase">
-          Launch Sandbox Architect // V3.0
-        </div>
-      </footer>
-
-      {/* Ignition Screen Shake */}
-      {isLaunching && (
-        <motion.div 
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          className="fixed inset-0 z-[100] bg-orange-600 flex items-center justify-center text-white"
-        >
-          <motion.div animate={{ x: [-2, 2, -2], y: [1, -1, 1] }} transition={{ repeat: Infinity, duration: 0.1 }}>
-            <h2 className="text-9xl font-black uppercase italic tracking-tighter">Ignition</h2>
-          </motion.div>
-        </motion.div>
-      )}
-    </div>
-  );
+    // Mock API Delay
+    setTimeout(() => {
+        clearInterval(interval);
+        document.body.style.transform = 'none';
+        window.location.href = `https://${portalInput.value}.learnupon.com/dashboard`;
+    }, 4500);
 }
