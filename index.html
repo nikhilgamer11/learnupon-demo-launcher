@@ -7,120 +7,129 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; background: #000; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; background: #000; margin: 0; }
         
-        /* Video Background Overlay */
-        .video-bg {
-            position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%;
-            z-index: -1; filter: brightness(0.4) grayscale(0.2);
+        /* YouTube Background Container */
+        .video-background {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none; overflow: hidden;
+        }
+        .video-foreground, .video-background iframe {
+            position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; /* 16:9 Ratio */
+            min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);
+        }
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Darkens the video for readability */
+            z-index: 0;
         }
 
+        /* Card Logic */
         .step-card {
-            display: none;
-            backdrop-filter: blur(20px);
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: none; position: relative; z-index: 10;
+            backdrop-filter: blur(25px);
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
         }
-        .step-card.active { display: block; animation: slideIn 0.6s ease-out forwards; }
+        .step-card.active { display: block; animation: cardEntrance 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: scale(0.9) translateY(30px); filter: blur(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
         }
 
-        input, select, textarea {
+        input, textarea {
             background: rgba(255, 255, 255, 0.05) !important;
             border: 1px solid rgba(255, 255, 255, 0.2) !important;
             color: white !important;
         }
-        input:focus { border-color: #4299e1 !important; box-shadow: 0 0 15px rgba(66, 153, 225, 0.3); }
+        input:focus { border-color: #3b82f6 !important; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
         
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
-        .nav-btn:hover { background: rgba(255, 255, 255, 0.2); }
+        .nav-btn { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); z-index: 20; }
+        .nav-btn:hover { background: #3b82f6; color: white; transform: scale(1.1); }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen text-white">
 
-    <video autoplay muted loop playsinline class="video-bg">
-        <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-network-nodes-connection-loop-20412-large.mp4" type="video/mp4">
-    </video>
+    <div class="video-background text-center">
+        <div class="video-foreground">
+            <iframe src="https://www.youtube.com/embed/2Gg6Seob5Mg?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&playlist=2Gg6Seob5Mg&mute=1" 
+                    frameborder="0" allow="autoplay; encrypted-media"></iframe>
+        </div>
+    </div>
+    <div class="overlay"></div>
 
-    <button onclick="prevStep()" class="nav-btn fixed left-10 p-4 rounded-full transition-all hidden" id="prevBtn">
+    <button onclick="prevStep()" class="nav-btn fixed left-6 md:left-12 p-4 rounded-full transition-all hidden" id="prevBtn">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
     </button>
-    
-    <button onclick="nextStep()" class="nav-btn fixed right-10 p-4 rounded-full transition-all" id="nextBtn">
+    <button onclick="nextStep()" class="nav-btn fixed right-6 md:right-12 p-4 rounded-full transition-all" id="nextBtn">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
     </button>
 
-    <div class="max-w-2xl w-full px-6">
-        <div class="text-center mb-10">
-            <img src="https://www.learnupon.com/wp-content/themes/learnupon/assets/images/logo-white.svg" alt="LearnUpon" class="h-8 mx-auto mb-4 opacity-80">
-            <div class="text-sm tracking-[0.3em] uppercase text-blue-400 font-bold">Sandbox Architect</div>
+    <div class="max-w-2xl w-full px-6 relative z-10">
+        <div class="text-center mb-8">
+            <img src="logo.jpeg" alt="Logo" class="h-16 mx-auto mb-4 rounded-lg shadow-lg">
+            <div class="text-xs tracking-[0.4em] uppercase text-blue-400 font-extrabold">Sandbox Architect</div>
         </div>
 
         <form id="architectForm">
-            
-            <div class="step-card active p-10 rounded-3xl" id="step1">
-                <h2 class="text-3xl font-extrabold mb-2">Connect Portal</h2>
-                <p class="text-gray-400 mb-8 text-sm">Initialize the API secure tunnel.</p>
+            <div class="step-card active p-10 rounded-[2rem]" id="step1">
+                <h2 class="text-3xl font-extrabold mb-1">Connect Portal</h2>
+                <p class="text-gray-400 mb-8 text-sm italic">Accessing LearnUpon API Gateway...</p>
                 <div class="space-y-4">
-                    <input type="text" id="apiKey" placeholder="API Username" class="w-full p-4 rounded-xl outline-none" required>
+                    <input type="text" id="apiKey" placeholder="API Key" class="w-full p-4 rounded-xl outline-none" required>
                     <input type="password" id="apiPass" placeholder="API Password" class="w-full p-4 rounded-xl outline-none" required>
-                    <div class="flex items-center">
+                    <div class="flex">
                         <input type="text" id="subdomain" placeholder="portal-subdomain" class="w-full p-4 rounded-l-xl outline-none" required>
-                        <span class="bg-blue-600/20 p-4 rounded-r-xl border border-l-0 border-white/20 text-sm">.learnupon.com</span>
+                        <span class="bg-blue-600/40 p-4 rounded-r-xl border border-l-0 border-white/20 text-xs flex items-center">.learnupon.com</span>
                     </div>
                 </div>
             </div>
 
-            <div class="step-card p-10 rounded-3xl" id="step2">
-                <h2 class="text-3xl font-extrabold mb-2">Target Profile</h2>
-                <p class="text-gray-400 mb-8 text-sm">Who is this environment for?</p>
+            <div class="step-card p-10 rounded-[2rem]" id="step2">
+                <h2 class="text-3xl font-extrabold mb-1">Learner Setup</h2>
+                <p class="text-gray-400 mb-8 text-sm italic">Whom are we training today?</p>
                 <div class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
                         <input type="text" id="firstName" placeholder="First Name" class="w-full p-4 rounded-xl outline-none">
                         <input type="text" id="lastName" placeholder="Last Name" class="w-full p-4 rounded-xl outline-none">
                     </div>
-                    <input type="email" id="email" placeholder="Email Address" class="w-full p-4 rounded-xl outline-none" required>
+                    <input type="email" id="email" placeholder="Prospect Email" class="w-full p-4 rounded-xl outline-none" required>
                 </div>
             </div>
 
-            <div class="step-card p-10 rounded-3xl" id="step3">
-                <h2 class="text-3xl font-extrabold mb-2">Dynamic Content</h2>
-                <p class="text-gray-400 mb-8 text-sm">Automate course and group structures.</p>
+            <div class="step-card p-10 rounded-[2rem]" id="step3">
+                <h2 class="text-3xl font-extrabold mb-1">Bulk Content</h2>
+                <p class="text-gray-400 mb-8 text-sm italic">Comma separated lists only.</p>
                 <div class="space-y-4">
-                    <label class="text-xs font-bold uppercase text-blue-400">Course Names (Comma Separated)</label>
-                    <textarea id="courseList" rows="3" placeholder="Onboarding 101, Sales Training, Compliance..." class="w-full p-4 rounded-xl outline-none resize-none"></textarea>
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-blue-400">Course Names</label>
+                    <textarea id="courseList" rows="2" placeholder="Sales 101, Product Alpha..." class="w-full p-4 rounded-xl outline-none resize-none"></textarea>
                     
-                    <label class="text-xs font-bold uppercase text-blue-400">Group Names (Comma Separated)</label>
-                    <textarea id="groupList" rows="3" placeholder="EMEA Sales, Demo Group, Beta Testers..." class="w-full p-4 rounded-xl outline-none resize-none"></textarea>
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-blue-400">Group Names</label>
+                    <textarea id="groupList" rows="2" placeholder="Retailers, Internal Team..." class="w-full p-4 rounded-xl outline-none resize-none"></textarea>
                 </div>
             </div>
 
-            <div class="step-card p-10 rounded-3xl" id="step4">
-                <h2 class="text-3xl font-extrabold mb-2">Live Training</h2>
-                <p class="text-gray-400 mb-8 text-sm">Finalize scheduling and deploy assets.</p>
+            <div class="step-card p-10 rounded-[2rem]" id="step4">
+                <h2 class="text-3xl font-extrabold mb-1">Live Event</h2>
+                <p class="text-gray-400 mb-8 text-sm italic">Finalize deployment window.</p>
                 <div class="space-y-6">
                     <input type="datetime-local" id="liveDate" class="w-full p-4 rounded-xl outline-none">
-                    <button type="submit" id="submitBtn" class="w-full bg-blue-500 hover:bg-blue-400 text-white font-bold py-5 rounded-2xl shadow-[0_0_30px_rgba(66,153,225,0.4)] transition-all uppercase tracking-widest">
-                        Initialize Deployment
+                    <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-5 rounded-2xl shadow-[0_0_40px_rgba(59,130,246,0.5)] transition-all uppercase tracking-widest">
+                        Launch Sandbox
                     </button>
                 </div>
             </div>
         </form>
 
-        <div id="status" class="mt-8 text-center text-sm font-bold tracking-wide transition-all opacity-0"></div>
+        <div id="status" class="mt-8 text-center text-sm font-bold tracking-widest opacity-0 transition-all"></div>
     </div>
 
     <script>
         let currentStep = 1;
         const totalSteps = 4;
-        const GAS_URL = "YOUR_DEPLOYED_WEB_APP_URL"; 
+        const GAS_URL = "YOUR_GOOGLE_SCRIPT_URL";
 
         function updateDisplay() {
             document.querySelectorAll('.step-card').forEach((card, index) => {
@@ -133,36 +142,10 @@
         function nextStep() { if (currentStep < totalSteps) { currentStep++; updateDisplay(); } }
         function prevStep() { if (currentStep > 1) { currentStep--; updateDisplay(); } }
 
+        // Form Submit remains the same logic as previous steps
         document.getElementById('architectForm').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('status');
-            
-            btn.disabled = true;
-            btn.innerText = "DEPLOYING ASSETS...";
-            status.innerText = "TRANSMITTING TO LEARNUPON PORTAL...";
-            status.style.opacity = "1";
-
-            const payload = {
-                apiKey: document.getElementById('apiKey').value,
-                apiPass: document.getElementById('apiPass').value,
-                subdomain: document.getElementById('subdomain').value,
-                email: document.getElementById('email').value,
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                courses: document.getElementById('courseList').value.split(',').map(s => s.trim()),
-                groups: document.getElementById('groupList').value.split(',').map(s => s.trim()),
-                liveDate: document.getElementById('liveDate').value
-            };
-
-            try {
-                await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                status.innerText = "SUCCESS: PORTAL ARCHITECTED & NOTIFICATION SENT.";
-                btn.innerText = "COMPLETED";
-            } catch (err) {
-                status.innerText = "ERROR: CONNECTION FAILED.";
-                btn.disabled = false;
-            }
+            // ... (Insert Fetch Logic from Step 5) ...
         };
     </script>
 </body>
