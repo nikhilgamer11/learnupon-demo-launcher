@@ -1,142 +1,151 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEMO PORTAL LAUNCH | ARCHITECT</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;900&display=swap" rel="stylesheet">
-    <style>
-        :root { --orange: #FF4D00; --bg: #0F0F0F; }
-        body { background-color: var(--bg); color: white; font-family: 'Inter', sans-serif; }
-        .heavy { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; line-height: 0.9; }
-        
-        /* Central Logo Unit */
-        .logo-anchor {
-            filter: drop-shadow(0 0 25px rgba(255, 77, 0, 0.6));
-            transition: all 0.5s ease;
-        }
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Rocket, Shield, Globe, Terminal, ChevronRight, Zap } from "lucide-react";
 
-        /* Video Layering */
-        .video-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2; object-fit: cover; opacity: 0.5;
-        }
-        
-        /* Rose Island Style Sections */
-        .section-frame {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            position: relative;
-        }
+// The Launch Sequence Steps
+const steps = [
+  { id: "01", title: "Target Portal", field: "subdomain", placeholder: "PORTAL-NAME", subtext: ".LEARNUPON.COM", icon: Globe },
+  { id: "02", title: "Authentication", field: "apiKey", placeholder: "API USERNAME", subtext: "SECURE CHANNEL", icon: Shield },
+  { id: "03", title: "Security Key", field: "apiPass", placeholder: "SECRET PASSWORD", subtext: "ENCRYPTED", icon: Terminal },
+  { id: "04", title: "Architecture", field: "courses", placeholder: "COURSES (COMMA SEPARATED)", subtext: "LOAD MANIFEST", icon: Zap },
+];
 
-        .line-input {
-            background: transparent; border: none; border-bottom: 5px solid white;
-            font-family: 'Archivo Black', sans-serif; font-size: clamp(2rem, 6vw, 5rem);
-            width: 80%; text-align: center; outline: none; transition: 0.4s;
-            text-transform: uppercase; color: white;
-        }
-        .line-input:focus { border-bottom-color: var(--orange); transform: scale(1.05); }
-        .line-input::placeholder { color: rgba(255,255,255,0.1); }
+export default function DemoPortalLaunch() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [formData, setFormData] = useState({ subdomain: "", apiKey: "", apiPass: "", courses: "" });
+  const [isLaunching, setIsLaunching] = useState(false);
 
-        .btn-launch {
-            background: var(--orange);
-            color: white;
-            padding: 2rem 4rem;
-            font-family: 'Archivo Black', sans-serif;
-            font-size: 2rem;
-            letter-spacing: 0.2em;
-            transition: all 0.3s;
-            box-shadow: 0 0 50px rgba(255, 77, 0, 0.4);
-        }
-        .btn-launch:hover { background: white; color: var(--orange); transform: scale(1.1); }
+  // Auto-scroll logic for Rose Island feel
+  const nextStep = () => currentStep < steps.length - 1 && setCurrentStep(s => s + 1);
 
-    </style>
-</head>
-<body>
+  return (
+    <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-orange-500/30 overflow-hidden">
+      
+      {/* Background Video Layer */}
+      <div className="fixed inset-0 z-0">
+        <video autoPlay muted loop playsInline className="h-full w-full object-cover opacity-40 grayscale contrast-125">
+          <source src="videoplayback.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
+        {/* Luminous Scanlines */}
+        <div className="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%]" />
+      </div>
 
-    <video autoplay muted loop playsinline class="video-bg">
-        <source src="videoplayback.mp4" type="video/mp4">
-    </video>
-
-    <header class="fixed top-12 left-0 w-full flex flex-col items-center z-50">
-        <div class="logo-anchor flex flex-col items-center">
-            <img src="logo.jpeg" class="h-16 w-auto mb-4 invert brightness-200">
-            <h2 class="text-white font-black tracking-[1.2em] uppercase text-[10px] sm:text-xs">
-                Demo Portal Launch
-            </h2>
+      {/* Persistent Header: Luminous Demo Hub */}
+      <header className="fixed top-0 left-0 w-full p-8 z-50 flex justify-between items-start">
+        <div className="flex flex-col">
+          <motion.div 
+            animate={{ opacity: [0.5, 1, 0.5] }} 
+            transition={{ duration: 4, repeat: Infinity }}
+            className="flex items-center gap-3"
+          >
+            <img src="logo.jpeg" alt="LU" className="h-8 invert brightness-200 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
+            <span className="text-[10px] tracking-[0.8em] uppercase font-black text-white/80">Demo Hub Setup</span>
+          </motion.div>
         </div>
-    </header>
+        <div className="text-right hidden md:block">
+          <p className="text-[10px] tracking-widest text-orange-500 font-bold uppercase">Status: Ready for Ignition</p>
+          <p className="text-[10px] tracking-widest text-white/30 uppercase mt-1">Coord: 11.0 KM Off-Shore</p>
+        </div>
+      </header>
 
-    <form id="architectForm">
-        <section class="section-frame">
-            <h1 class="heavy text-orange-600 text-sm tracking-[0.5em] mb-6">Step 01 / Target Subdomain</h1>
-            <input type="text" id="subdomain" class="line-input" placeholder="PORTAL NAME" required>
-        </section>
+      {/* Main Experience */}
+      <main className="relative z-10 flex min-h-screen">
+        
+        {/* Left Side: Editorial Typography */}
+        <div className="w-full lg:w-3/5 p-12 flex flex-col justify-center">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentStep}
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 50, opacity: 0 }}
+              className="max-w-2xl"
+            >
+              <span className="text-orange-500 font-black text-xs tracking-[0.5em] uppercase mb-4 block">
+                Step {steps[currentStep].id}
+              </span>
+              <h1 className="text-7xl md:text-9xl font-black uppercase tracking-tighter leading-none mb-8">
+                {steps[currentStep].title}<span className="text-orange-600">.</span>
+              </h1>
+              
+              <div className="relative group">
+                <input
+                  type={steps[currentStep].field === "apiPass" ? "password" : "text"}
+                  className="w-full bg-transparent border-b-4 border-white/20 py-6 text-4xl md:text-6xl font-black uppercase outline-none focus:border-orange-600 transition-colors placeholder:text-white/5"
+                  placeholder={steps[currentStep].placeholder}
+                  autoFocus
+                  value={formData[steps[currentStep].field]}
+                  onChange={(e) => setFormData({...formData, [steps[currentStep].field]: e.target.value})}
+                  onKeyDown={(e) => e.key === 'Enter' && nextStep()}
+                />
+                <p className="mt-4 text-sm tracking-[0.3em] font-bold text-white/40 uppercase">
+                  {steps[currentStep].subtext}
+                </p>
+              </div>
 
-        <section class="section-frame bg-white/90 backdrop-blur-md">
-            <h1 class="heavy text-black text-sm tracking-[0.5em] mb-6">Step 02 / Secure Keys</h1>
-            <div class="w-full flex flex-col items-center gap-12">
-                <input type="text" id="apiKey" class="line-input !border-black !text-black" placeholder="API KEY" required>
-                <input type="password" id="apiPass" class="line-input !border-black !text-black" placeholder="API PASSWORD" required>
-            </div>
-        </section>
+              <div className="mt-12 flex gap-4">
+                {currentStep < steps.length - 1 ? (
+                  <Button onClick={nextStep} className="bg-white text-black hover:bg-orange-600 hover:text-white px-8 py-6 rounded-none font-black tracking-widest uppercase">
+                    Continue <ChevronRight className="ml-2" />
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={() => setIsLaunching(true)} 
+                    className="bg-orange-600 text-white hover:bg-white hover:text-black px-12 py-8 rounded-none font-black text-2xl tracking-[0.2em] uppercase transition-all duration-500 shadow-[0_0_40px_rgba(255,77,0,0.4)]"
+                  >
+                    {isLaunching ? "Ignition Started..." : "Initialize Launch"}
+                  </Button>
+                )}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-        <section class="section-frame">
-            <h1 class="heavy text-orange-600 text-sm tracking-[0.5em] mb-6">Step 03 / Load Manifest</h1>
-            <div class="w-full flex flex-col items-center gap-12">
-                <input type="text" id="courseList" class="line-input" placeholder="COURSES (COMMA SEPARATED)" required>
-                <input type="text" id="groupList" class="line-input" placeholder="GROUPS (COMMA SEPARATED)" required>
-            </div>
-        </section>
+        {/* Right Side: Status Telemetry (Chrono Style) */}
+        <div className="hidden lg:flex w-2/5 flex-col justify-center p-12 bg-white/5 backdrop-blur-md border-l border-white/10">
+          <div className="space-y-8">
+            <h3 className="text-[10px] tracking-[0.5em] uppercase text-white/40 font-black border-b border-white/10 pb-4">Manifest Telemetry</h3>
+            {steps.map((step, idx) => (
+              <div key={step.id} className={`transition-all duration-700 ${idx <= currentStep ? "opacity-100" : "opacity-10"}`}>
+                <div className="flex items-center gap-4 mb-2">
+                  <step.icon className={`h-4 w-4 ${idx === currentStep ? "text-orange-500" : "text-white"}`} />
+                  <span className="text-[10px] tracking-widest uppercase font-bold">{step.title}</span>
+                </div>
+                <div className="h-1 bg-white/10 w-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: idx <= currentStep ? "100%" : "0%" }}
+                    className="h-full bg-orange-600"
+                  />
+                </div>
+                <p className="mt-1 text-[9px] font-mono text-white/50 truncate italic">
+                  {formData[step.field] ? `VERIFIED: ${formData[step.field]}` : "AWAITING INPUT..."}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
 
-        <section class="section-frame bg-orange-600">
-            <h1 class="heavy text-white text-3xl mb-12 italic">All systems go.</h1>
-            <input type="datetime-local" id="liveDate" class="line-input !border-white mb-20 !text-2xl">
-            
-            <button type="submit" id="submitBtn" class="btn-launch">
-                INITIATE LAUNCH
-            </button>
-            <p id="status" class="mt-8 font-black uppercase text-xs tracking-widest text-black animate-pulse"></p>
-        </section>
-    </form>
-
-    <script>
-        const GAS_URL = "YOUR_GOOGLE_SCRIPT_URL";
-
-        document.getElementById('architectForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('status');
-            
-            btn.innerText = "IGNITION...";
-            status.innerText = "COORDINATING WITH LEARNUPON API...";
-
-            const payload = {
-                subdomain: document.getElementById('subdomain').value,
-                apiKey: document.getElementById('apiKey').value,
-                apiPass: document.getElementById('apiPass').value,
-                courses: document.getElementById('courseList').value.split(','),
-                groups: document.getElementById('groupList').value.split(','),
-                liveDate: document.getElementById('liveDate').value
-            };
-
-            try {
-                // Sending to Google Apps Script
-                await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                status.innerText = "ORBIT ACHIEVED. PORTAL IS LIVE.";
-                btn.innerText = "LAUNCH COMPLETE";
-                btn.style.background = "black";
-            } catch (err) {
-                status.innerText = "LAUNCH ABORTED. CHECK CONNECTION.";
-                btn.innerText = "RETRY IGNITION";
-            }
-        };
-    </script>
-</body>
-</html>
+      {/* Full Screen Launch Overlay */}
+      <AnimatePresence>
+        {isLaunching && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            className="fixed inset-0 z-[100] bg-orange-600 flex flex-col items-center justify-center text-center p-6"
+          >
+            <motion.div 
+              animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
+              transition={{ repeat: Infinity, duration: 0.5 }}
+            >
+              <Rocket className="h-32 w-32 text-white mb-8" />
+            </motion.div>
+            <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter text-white mb-4">Ignition Sequence</h2>
+            <p className="text-white/80 tracking-[0.5em] uppercase text-sm animate-pulse">Establishing Micronation in the cloud...</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
