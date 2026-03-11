@@ -3,57 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEMO PORTAL LAUNCH | ARCHITECT</title>
+    <title>SANDBOX ARCHITECT | LEARNUPON</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;900&display=swap" rel="stylesheet">
     <style>
         :root { --orange: #FF4D00; --bg: #0F0F0F; }
-        body { background-color: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; }
+        body { background-color: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
         .heavy { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; line-height: 0.9; }
         
-        .logo-anchor {
-            filter: drop-shadow(0 0 25px rgba(255, 77, 0, 0.6));
-            transition: all 0.5s ease;
-        }
-
+        /* Background Cinematic Layer */
         .video-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2; object-fit: cover; opacity: 0.5;
+            z-index: -2; object-fit: cover; opacity: 0.4; filter: contrast(120%) grayscale(20%);
         }
-        
+
+        /* Rose Island Sectioning */
         .section-frame {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            position: relative;
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            padding: 2rem; position: relative;
         }
 
         .line-input {
             background: transparent; border: none; border-bottom: 5px solid white;
-            font-family: 'Archivo Black', sans-serif; font-size: clamp(2rem, 6vw, 5rem);
-            width: 80%; text-align: center; outline: none; transition: 0.4s;
-            text-transform: uppercase; color: white;
+            font-family: 'Archivo Black', sans-serif; font-size: clamp(1.5rem, 5vw, 4rem);
+            width: 85%; text-align: center; outline: none; transition: 0.4s;
+            text-transform: uppercase; color: white; margin-top: 2rem;
         }
-        .line-input:focus { border-bottom-color: var(--orange); transform: scale(1.05); }
-        .line-input::placeholder { color: rgba(255,255,255,0.1); }
+        .line-input:focus { border-bottom-color: var(--orange); transform: scale(1.02); }
+        .line-input::placeholder { color: rgba(255,255,255,0.05); }
 
         .btn-launch {
-            background: var(--orange);
-            color: white;
-            padding: 2rem 4rem;
-            font-family: 'Archivo Black', sans-serif;
-            font-size: 2rem;
-            letter-spacing: 0.2em;
-            transition: all 0.3s;
-            box-shadow: 0 0 50px rgba(255, 77, 0, 0.4);
-            cursor: pointer;
+            background: var(--orange); color: white; padding: 1.5rem 3.5rem;
+            font-family: 'Archivo Black', sans-serif; font-size: 1.8rem;
+            letter-spacing: 0.2em; transition: all 0.3s;
+            box-shadow: 0 0 50px rgba(255, 77, 0, 0.4); cursor: pointer;
         }
         .btn-launch:hover { background: white; color: var(--orange); transform: scale(1.1); }
-        .btn-launch:disabled { background: #333; cursor: not-allowed; transform: none; }
+        
+        /* Ignition Overlay */
+        #ignition {
+            position: fixed; inset: 0; background: var(--orange); z-index: 100;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -62,97 +54,104 @@
         <source src="videoplayback.mp4" type="video/mp4">
     </video>
 
-    <header class="fixed top-12 left-0 w-full flex flex-col items-center z-50">
-        <div class="logo-anchor flex flex-col items-center">
-            <img src="logo.jpeg" class="h-16 w-auto mb-4 invert brightness-200">
-            <h2 class="text-white font-black tracking-[1.2em] uppercase text-[10px] sm:text-xs">
-                Demo Portal Launch
-            </h2>
-        </div>
+    <header class="fixed top-10 left-0 w-full flex flex-col items-center z-50 pointer-events-none">
+        <img src="logo.jpeg" class="h-12 w-auto mb-2 invert brightness-200 opacity-80">
+        <h2 class="text-white font-black tracking-[1.5em] uppercase text-[10px]">
+            Sandbox Architect
+        </h2>
     </header>
 
     <form id="architectForm">
         <section class="section-frame">
-            <h1 class="heavy text-orange-600 text-sm tracking-[0.5em] mb-6">Step 01 / Target Subdomain</h1>
+            <h1 class="heavy text-orange-600 text-xs tracking-[0.6em] mb-2">Step 01 / Target Subdomain</h1>
             <input type="text" id="subdomain" class="line-input" placeholder="PORTAL NAME" required>
         </section>
 
-        <section class="section-frame bg-white/90 backdrop-blur-md">
-            <h1 class="heavy text-black text-sm tracking-[0.5em] mb-6">Step 02 / Secure Keys</h1>
-            <div class="w-full flex flex-col items-center gap-12">
-                <input type="text" id="apiKey" class="line-input !border-black !text-black" placeholder="API KEY" required>
-                <input type="password" id="apiPass" class="line-input !border-black !text-black" placeholder="API PASSWORD" required>
+        <section class="section-frame bg-white/95 backdrop-blur-sm">
+            <h1 class="heavy text-black text-xs tracking-[0.6em] mb-2">Step 02 / Access Keys</h1>
+            <div class="w-full flex flex-col items-center gap-8">
+                <input type="text" id="apiKey" class="line-input !border-black !text-black !text-3xl" placeholder="API KEY" required>
+                <input type="password" id="apiPass" class="line-input !border-black !text-black !text-3xl" placeholder="API PASSWORD" required>
             </div>
         </section>
 
         <section class="section-frame">
-            <h1 class="heavy text-orange-600 text-sm tracking-[0.5em] mb-6">Step 03 / Load Manifest</h1>
-            <div class="w-full flex flex-col items-center gap-12">
-                <input type="text" id="courseList" class="line-input" placeholder="COURSES (COMMA SEPARATED)" required>
-                <input type="text" id="groupList" class="line-input" placeholder="GROUPS (COMMA SEPARATED)" required>
-            </div>
+            <h1 class="heavy text-orange-600 text-xs tracking-[0.6em] mb-2">Step 03 / Course Manifest</h1>
+            <input type="text" id="courseList" class="line-input" placeholder="COURSES (COMMA SEPARATED)" required>
+            <p class="text-[10px] uppercase tracking-widest mt-4 opacity-40">Ensure 7+ courses for full deployment</p>
         </section>
 
         <section class="section-frame bg-orange-600">
-            <h1 class="heavy text-white text-3xl mb-12 italic text-center">All systems go.</h1>
-            <input type="datetime-local" id="liveDate" class="line-input !border-white mb-20 !text-2xl" required>
+            <h1 class="heavy text-white text-5xl mb-12 italic tracking-tighter">Ready for Orbit.</h1>
+            <input type="datetime-local" id="liveDate" class="line-input !border-white !text-2xl mb-12" required>
             
             <button type="submit" id="submitBtn" class="btn-launch">INITIATE LAUNCH</button>
-            <p id="status" class="mt-8 font-black uppercase text-xs tracking-widest text-black animate-pulse h-4"></p>
+            <p id="status" class="mt-8 font-black uppercase text-[10px] tracking-[0.4em] text-black h-4"></p>
         </section>
     </form>
 
+    <div id="ignition">
+        <h1 class="heavy text-white text-8xl md:text-9xl animate-pulse italic">Ignition</h1>
+    </div>
+
     <script>
-        const GAS_URL = "REPLACE_WITH_YOUR_DEPLOYED_GAS_URL";
+        const GAS_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE";
 
         document.getElementById('architectForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             const status = document.getElementById('status');
+            const overlay = document.getElementById('ignition');
             
-            // Validation
+            // 1. Validation Logic
             const sub = document.getElementById('subdomain').value.trim();
-            if(sub.includes('.') || sub.includes(' ')) {
+            if (sub.includes('.') || sub.includes(' ')) {
                 status.innerText = "ERROR: SUBDOMAIN MUST BE A SINGLE WORD";
                 return;
             }
 
-            btn.innerText = "IGNITION...";
-            btn.disabled = true;
-            status.innerText = "COORDINATING WITH LEARNUPON API...";
+            // 2. Start Sequence
+            btn.innerText = "LAUNCHING...";
+            status.innerText = "ESTABLISHING API SECURE CHANNEL...";
+            overlay.style.display = 'flex';
 
+            // 3. Physical Shake Effect
+            let intensity = 0;
+            const shake = setInterval(() => {
+                intensity = Math.min(intensity + 0.3, 12);
+                const x = (Math.random() - 0.5) * intensity;
+                const y = (Math.random() - 0.5) * intensity;
+                document.body.style.transform = `translate(${x}px, ${y}px)`;
+            }, 30);
+
+            // 4. Payload Generation
             const payload = {
                 subdomain: sub.toLowerCase(),
                 apiKey: document.getElementById('apiKey').value.trim(),
                 apiPass: document.getElementById('apiPass').value.trim(),
                 courses: document.getElementById('courseList').value.split(',').map(s => s.trim()),
-                groups: document.getElementById('groupList').value.split(',').map(s => s.trim()),
                 liveDate: document.getElementById('liveDate').value
             };
 
+            // 5. Transmission
             try {
                 await fetch(GAS_URL, { 
-                    method: 'POST', 
-                    mode: 'no-cors', 
-                    body: JSON.stringify(payload),
-                    headers: { 'Content-Type': 'application/json' }
+                    method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) 
                 });
                 
-                status.innerText = "ORBIT ACHIEVED. PORTAL IS LIVE.";
-                btn.innerText = "LAUNCH COMPLETE";
-                btn.style.background = "black";
-                
-                // Final "Impact" shake
-                document.body.animate([
-                    { transform: 'translate(2px, 2px)' },
-                    { transform: 'translate(-2px, -2px)' },
-                    { transform: 'translate(0, 0)' }
-                ], { duration: 100, iterations: 10 });
+                setTimeout(() => {
+                    clearInterval(shake);
+                    document.body.style.transform = 'none';
+                    status.innerText = "MISSION SUCCESS. PORTAL DEPLOYED.";
+                    btn.innerText = "ORBIT ACHIEVED";
+                    overlay.innerHTML = '<h1 class="heavy text-white text-6xl">DEPLOYMENT COMPLETE</h1>';
+                }, 4000);
 
             } catch (err) {
-                status.innerText = "LAUNCH ABORTED. CHECK CONNECTION.";
-                btn.innerText = "RETRY IGNITION";
-                btn.disabled = false;
+                clearInterval(shake);
+                overlay.style.display = 'none';
+                status.innerText = "LAUNCH ABORTED. CHECK API CONNECTION.";
+                btn.innerText = "RETRY MISSION";
             }
         };
     </script>
