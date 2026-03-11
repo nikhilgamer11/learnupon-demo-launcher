@@ -7,118 +7,105 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%); 
+            min-height: 100vh; 
+        }
+        .glass { 
+            background: rgba(255, 255, 255, 1); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+        }
+        .lu-gradient {
+            background: linear-gradient(to right, #2b6cb0, #4299e1);
+        }
     </style>
 </head>
-<body class="flex items-center justify-center p-6">
+<body class="flex items-center justify-center p-4 md:p-10">
 
-    <div class="glass max-w-lg w-full rounded-2xl shadow-2xl p-8">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">Sandbox Builder</h1>
-            <p class="text-gray-500 mt-2">Automate your LearnUpon demo environments in seconds.</p>
+    <div class="glass max-w-xl w-full rounded-3xl overflow-hidden">
+        <div class="lu-gradient p-8 text-center">
+            <img src="https://www.learnupon.com/wp-content/themes/learnupon/assets/images/logo-white.svg" alt="LearnUpon" class="h-10 mx-auto mb-4">
+            <h1 class="text-2xl font-bold text-white tracking-tight">Sandbox Demo Launcher</h1>
+            <span class="inline-block mt-2 px-3 py-1 bg-blue-900/30 text-blue-100 text-xs font-bold uppercase tracking-wider rounded-full">Automation Portal</span>
         </div>
 
-        <form id="launcherForm" class="space-y-5">
-            <div class="grid grid-cols-2 gap-4">
+        <div class="p-8">
+            <form id="launcherForm" class="space-y-6">
+                
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">API Key (User)</label>
-                    <input type="text" id="apiKey" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition" placeholder="Username" required>
+                    <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">1. Environment Credentials</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">API Key</label>
+                            <input type="text" id="apiKey" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="Username" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">API Password</label>
+                            <input type="password" id="apiPass" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <div class="mt-4 space-y-1">
+                        <label class="text-sm font-semibold text-gray-700">Portal Subdomain</label>
+                        <div class="flex">
+                            <input type="text" id="subdomain" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-l-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="e.g. acme-corp" required>
+                            <span class="inline-flex items-center px-4 rounded-r-xl border border-l-0 border-gray-200 bg-gray-100 text-gray-500 text-sm font-medium">.learnupon.com</span>
+                        </div>
+                    </div>
                 </div>
+
+                <hr class="border-gray-100">
+
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">API Password</label>
-                    <input type="password" id="apiPass" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition" placeholder="••••••••" required>
+                    <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">2. Demo Requirements</h2>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                             <div class="space-y-1">
+                                <label class="text-sm font-semibold text-gray-700">First Name</label>
+                                <input type="text" id="firstName" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="Jane" required>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-sm font-semibold text-gray-700">Last Name</label>
+                                <input type="text" id="lastName" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="Doe" required>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Learner Email</label>
+                            <input type="email" id="email" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="jane.doe@client.com" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Assign Course Content</label>
+                            <select id="courseId" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition appearance-none" required>
+                                <option value="">Loading courses from API...</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Live Learning Event Date</label>
+                            <input type="datetime-local" id="liveDate" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition">
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Portal Subdomain</label>
-                <div class="flex">
-                    <input type="text" id="subdomain" class="w-full p-3 border border-gray-200 rounded-l-lg focus:ring-2 focus:ring-purple-500 outline-none transition" placeholder="your-portal" required>
-                    <span class="inline-flex items-center px-3 rounded-r-lg border border-l-0 border-gray-200 bg-gray-50 text-gray-500 text-sm">.learnupon.com</span>
-                </div>
-            </div>
+                <button type="submit" id="submitBtn" class="w-full lu-gradient hover:opacity-90 text-white font-bold py-4 rounded-2xl shadow-xl transform transition active:scale-[0.98] mt-4 flex items-center justify-center space-x-2">
+                    <span>Deploy Demo Portal</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </form>
 
-            <hr class="border-gray-100">
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Learner Email</label>
-                <input type="email" id="email" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition" placeholder="prospect@company.com" required>
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Assign Course</label>
-                <select id="courseId" class="w-full p-3 border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-purple-500 outline-none transition" required>
-                    <option value="">Fetching courses...</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Scheduled Demo Date</label>
-                <input type="datetime-local" id="liveDate" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition">
-            </div>
-
-            <button type="submit" id="submitBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition active:scale-95">
-                Generate Sandbox
-            </button>
-        </form>
-
-        <div id="status" class="mt-4 text-center text-sm font-medium hidden"></div>
+            <div id="status" class="mt-6 text-center text-sm font-semibold hidden p-3 rounded-lg"></div>
+        </div>
     </div>
 
     <script>
         const GAS_URL = "YOUR_DEPLOYED_WEB_APP_URL"; 
 
-        // Fetch courses on load
-        window.onload = async () => {
-            try {
-                const response = await fetch(GAS_URL);
-                const courses = await response.json();
-                const select = document.getElementById('courseId');
-                select.innerHTML = '<option value="">-- Select Course --</option>';
-                courses.forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c.id;
-                    opt.innerHTML = c.name;
-                    select.appendChild(opt);
-                });
-            } catch (e) {
-                console.error("Course fetch failed");
-            }
-        };
+        // Fetch courses logic here (keep same as previous script)
+        window.onload = async () => { /* ... (keep the window.onload logic from previous step) ... */ };
 
-        document.getElementById('launcherForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('status');
-            
-            btn.disabled = true;
-            btn.innerHTML = `<span class="animate-pulse">Building Portal...</span>`;
-            status.classList.remove('hidden', 'text-red-500', 'text-green-600');
-            status.classList.add('text-purple-600');
-            status.innerText = "Talking to LearnUpon APIs...";
-
-            const payload = {
-                apiKey: document.getElementById('apiKey').value,
-                apiPass: document.getElementById('apiPass').value,
-                subdomain: document.getElementById('subdomain').value,
-                email: document.getElementById('email').value,
-                courseId: document.getElementById('courseId').value,
-                liveLearningDate: document.getElementById('liveDate').value
-            };
-
-            try {
-                await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
-                status.innerText = "✅ Sandbox Ready! Notification sent.";
-                status.classList.replace('text-purple-600', 'text-green-600');
-                btn.innerHTML = "Success!";
-            } catch (err) {
-                status.innerText = "❌ Error occurred. Check GAS logs.";
-                status.classList.replace('text-purple-600', 'text-red-500');
-                btn.innerHTML = "Try Again";
-                btn.disabled = false;
-            }
-        };
+        // Submission logic here (keep same as previous script)
+        document.getElementById('launcherForm').onsubmit = async (e) => { /* ... (keep the submit logic) ... */ };
     </script>
 </body>
 </html>
