@@ -1,44 +1,160 @@
-// Initialize Icons
-lucide.createIcons();
-
-function launchSequence() {
-    // 1. Target the inputs
-    const portalInput = document.querySelector('input[placeholder="PORTAL NAME"]');
-    const statusMsg = document.querySelector('.heavy.text-orange-600.text-xs');
-    
-    // 2. Perform Validation
-    if (!portalInput.value || portalInput.value.length < 3) {
-        // Error Feedback
-        portalInput.classList.add('border-red-600');
-        statusMsg.innerText = "ERROR: INVALID PORTAL COORDINATES";
-        statusMsg.classList.replace('text-orange-600', 'text-red-600');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEMO PORTAL LAUNCH | ARCHITECT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --orange: #FF4D00; --bg: #0F0F0F; }
+        body { background-color: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; }
+        .heavy { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; line-height: 0.9; }
         
-        // Vibration effect for error
-        document.getElementById('form-container').animate([
-            { transform: 'translateX(-5px)' },
-            { transform: 'translateX(5px)' }
-        ], { duration: 100, iterations: 3 });
+        .logo-anchor {
+            filter: drop-shadow(0 0 25px rgba(255, 77, 0, 0.6));
+            transition: all 0.5s ease;
+        }
+
+        .video-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; object-fit: cover; opacity: 0.5;
+        }
         
-        return;
-    }
+        .section-frame {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
 
-    // 3. Successful Validation -> Start Ignition
-    const overlay = document.getElementById('ignition');
-    overlay.style.display = 'flex';
-    
-    // Intense Screen Shake Logic
-    let intensity = 0;
-    const interval = setInterval(() => {
-        intensity = Math.min(intensity + 0.5, 15); // Build intensity over time
-        const x = (Math.random() - 0.5) * intensity;
-        const y = (Math.random() - 0.5) * intensity;
-        document.body.style.transform = `translate(${x}px, ${y}px)`;
-    }, 30);
+        .line-input {
+            background: transparent; border: none; border-bottom: 5px solid white;
+            font-family: 'Archivo Black', sans-serif; font-size: clamp(2rem, 6vw, 5rem);
+            width: 80%; text-align: center; outline: none; transition: 0.4s;
+            text-transform: uppercase; color: white;
+        }
+        .line-input:focus { border-bottom-color: var(--orange); transform: scale(1.05); }
+        .line-input::placeholder { color: rgba(255,255,255,0.1); }
 
-    // Mock API Delay
-    setTimeout(() => {
-        clearInterval(interval);
-        document.body.style.transform = 'none';
-        window.location.href = `https://${portalInput.value}.learnupon.com/dashboard`;
-    }, 4500);
-}
+        .btn-launch {
+            background: var(--orange);
+            color: white;
+            padding: 2rem 4rem;
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 0.2em;
+            transition: all 0.3s;
+            box-shadow: 0 0 50px rgba(255, 77, 0, 0.4);
+            cursor: pointer;
+        }
+        .btn-launch:hover { background: white; color: var(--orange); transform: scale(1.1); }
+        .btn-launch:disabled { background: #333; cursor: not-allowed; transform: none; }
+    </style>
+</head>
+<body>
+
+    <video autoplay muted loop playsinline class="video-bg">
+        <source src="videoplayback.mp4" type="video/mp4">
+    </video>
+
+    <header class="fixed top-12 left-0 w-full flex flex-col items-center z-50">
+        <div class="logo-anchor flex flex-col items-center">
+            <img src="logo.jpeg" class="h-16 w-auto mb-4 invert brightness-200">
+            <h2 class="text-white font-black tracking-[1.2em] uppercase text-[10px] sm:text-xs">
+                Demo Portal Launch
+            </h2>
+        </div>
+    </header>
+
+    <form id="architectForm">
+        <section class="section-frame">
+            <h1 class="heavy text-orange-600 text-sm tracking-[0.5em] mb-6">Step 01 / Target Subdomain</h1>
+            <input type="text" id="subdomain" class="line-input" placeholder="PORTAL NAME" required>
+        </section>
+
+        <section class="section-frame bg-white/90 backdrop-blur-md">
+            <h1 class="heavy text-black text-sm tracking-[0.5em] mb-6">Step 02 / Secure Keys</h1>
+            <div class="w-full flex flex-col items-center gap-12">
+                <input type="text" id="apiKey" class="line-input !border-black !text-black" placeholder="API KEY" required>
+                <input type="password" id="apiPass" class="line-input !border-black !text-black" placeholder="API PASSWORD" required>
+            </div>
+        </section>
+
+        <section class="section-frame">
+            <h1 class="heavy text-orange-600 text-sm tracking-[0.5em] mb-6">Step 03 / Load Manifest</h1>
+            <div class="w-full flex flex-col items-center gap-12">
+                <input type="text" id="courseList" class="line-input" placeholder="COURSES (COMMA SEPARATED)" required>
+                <input type="text" id="groupList" class="line-input" placeholder="GROUPS (COMMA SEPARATED)" required>
+            </div>
+        </section>
+
+        <section class="section-frame bg-orange-600">
+            <h1 class="heavy text-white text-3xl mb-12 italic text-center">All systems go.</h1>
+            <input type="datetime-local" id="liveDate" class="line-input !border-white mb-20 !text-2xl" required>
+            
+            <button type="submit" id="submitBtn" class="btn-launch">INITIATE LAUNCH</button>
+            <p id="status" class="mt-8 font-black uppercase text-xs tracking-widest text-black animate-pulse h-4"></p>
+        </section>
+    </form>
+
+    <script>
+        const GAS_URL = "REPLACE_WITH_YOUR_DEPLOYED_GAS_URL";
+
+        document.getElementById('architectForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('status');
+            
+            // Validation
+            const sub = document.getElementById('subdomain').value.trim();
+            if(sub.includes('.') || sub.includes(' ')) {
+                status.innerText = "ERROR: SUBDOMAIN MUST BE A SINGLE WORD";
+                return;
+            }
+
+            btn.innerText = "IGNITION...";
+            btn.disabled = true;
+            status.innerText = "COORDINATING WITH LEARNUPON API...";
+
+            const payload = {
+                subdomain: sub.toLowerCase(),
+                apiKey: document.getElementById('apiKey').value.trim(),
+                apiPass: document.getElementById('apiPass').value.trim(),
+                courses: document.getElementById('courseList').value.split(',').map(s => s.trim()),
+                groups: document.getElementById('groupList').value.split(',').map(s => s.trim()),
+                liveDate: document.getElementById('liveDate').value
+            };
+
+            try {
+                await fetch(GAS_URL, { 
+                    method: 'POST', 
+                    mode: 'no-cors', 
+                    body: JSON.stringify(payload),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                status.innerText = "ORBIT ACHIEVED. PORTAL IS LIVE.";
+                btn.innerText = "LAUNCH COMPLETE";
+                btn.style.background = "black";
+                
+                // Final "Impact" shake
+                document.body.animate([
+                    { transform: 'translate(2px, 2px)' },
+                    { transform: 'translate(-2px, -2px)' },
+                    { transform: 'translate(0, 0)' }
+                ], { duration: 100, iterations: 10 });
+
+            } catch (err) {
+                status.innerText = "LAUNCH ABORTED. CHECK CONNECTION.";
+                btn.innerText = "RETRY IGNITION";
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>
