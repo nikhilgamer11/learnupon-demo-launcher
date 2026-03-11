@@ -1,151 +1,103 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Rocket, Shield, Globe, Terminal, ChevronRight, Zap } from "lucide-react";
+import { Rocket, Shield, Globe, ChevronRight } from "lucide-react";
 
-// The Launch Sequence Steps
+// The steps for the Launch Sandbox form
 const steps = [
-  { id: "01", title: "Target Portal", field: "subdomain", placeholder: "PORTAL-NAME", subtext: ".LEARNUPON.COM", icon: Globe },
-  { id: "02", title: "Authentication", field: "apiKey", placeholder: "API USERNAME", subtext: "SECURE CHANNEL", icon: Shield },
-  { id: "03", title: "Security Key", field: "apiPass", placeholder: "SECRET PASSWORD", subtext: "ENCRYPTED", icon: Terminal },
-  { id: "04", title: "Architecture", field: "courses", placeholder: "COURSES (COMMA SEPARATED)", subtext: "LOAD MANIFEST", icon: Zap },
+  { id: "01", title: "Target Portal", field: "subdomain", placeholder: "PORTAL-NAME" },
+  { id: "02", title: "Credentials", field: "apiKey", placeholder: "API USERNAME" },
+  { id: "03", title: "Secret Key", field: "apiPass", placeholder: "API PASSWORD" },
+  { id: "04", title: "Load Manifest", field: "courses", placeholder: "COURSES (COMMA-SEPARATED)" },
 ];
 
-export default function DemoPortalLaunch() {
+export default function FinishedLauncher() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState({ subdomain: "", apiKey: "", apiPass: "", courses: "" });
   const [isLaunching, setIsLaunching] = useState(false);
 
-  // Auto-scroll logic for Rose Island feel
-  const nextStep = () => currentStep < steps.length - 1 && setCurrentStep(s => s + 1);
-
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-orange-500/30 overflow-hidden">
+    <div className="relative min-h-screen bg-black overflow-hidden font-sans">
       
-      {/* Background Video Layer */}
-      <div className="fixed inset-0 z-0">
-        <video autoPlay muted loop playsInline className="h-full w-full object-cover opacity-40 grayscale contrast-125">
+      {/* 1. THE BACKGROUND: High-contrast rocket video */}
+      <div className="absolute inset-0 z-0">
+        <video autoPlay muted loop playsInline className="h-full w-full object-cover opacity-50 contrast-125 grayscale hover:grayscale-0 transition-all duration-1000">
           <source src="videoplayback.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
-        {/* Luminous Scanlines */}
-        <div className="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/80" />
       </div>
 
-      {/* Persistent Header: Luminous Demo Hub */}
-      <header className="fixed top-0 left-0 w-full p-8 z-50 flex justify-between items-start">
-        <div className="flex flex-col">
-          <motion.div 
-            animate={{ opacity: [0.5, 1, 0.5] }} 
-            transition={{ duration: 4, repeat: Infinity }}
-            className="flex items-center gap-3"
-          >
-            <img src="logo.jpeg" alt="LU" className="h-8 invert brightness-200 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
-            <span className="text-[10px] tracking-[0.8em] uppercase font-black text-white/80">Demo Hub Setup</span>
-          </motion.div>
-        </div>
-        <div className="text-right hidden md:block">
-          <p className="text-[10px] tracking-widest text-orange-500 font-bold uppercase">Status: Ready for Ignition</p>
-          <p className="text-[10px] tracking-widest text-white/30 uppercase mt-1">Coord: 11.0 KM Off-Shore</p>
+      {/* 2. THE HEADER: Luminous centered branding */}
+      <header className="absolute top-12 left-0 w-full flex flex-col items-center z-50">
+        <div className="flex flex-col items-center">
+          <img src="logo.jpeg" className="h-12 invert brightness-200 drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]" />
+          <p className="text-[10px] tracking-[1.2em] uppercase font-black text-white/70 mt-4">Demo Portal Launch</p>
         </div>
       </header>
 
-      {/* Main Experience */}
-      <main className="relative z-10 flex min-h-screen">
-        
-        {/* Left Side: Editorial Typography */}
-        <div className="w-full lg:w-3/5 p-12 flex flex-col justify-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial={{ x: -50, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 50, opacity: 0 }}
-              className="max-w-2xl"
-            >
-              <span className="text-orange-500 font-black text-xs tracking-[0.5em] uppercase mb-4 block">
-                Step {steps[currentStep].id}
-              </span>
-              <h1 className="text-7xl md:text-9xl font-black uppercase tracking-tighter leading-none mb-8">
-                {steps[currentStep].title}<span className="text-orange-600">.</span>
-              </h1>
-              
-              <div className="relative group">
-                <input
-                  type={steps[currentStep].field === "apiPass" ? "password" : "text"}
-                  className="w-full bg-transparent border-b-4 border-white/20 py-6 text-4xl md:text-6xl font-black uppercase outline-none focus:border-orange-600 transition-colors placeholder:text-white/5"
-                  placeholder={steps[currentStep].placeholder}
-                  autoFocus
-                  value={formData[steps[currentStep].field]}
-                  onChange={(e) => setFormData({...formData, [steps[currentStep].field]: e.target.value})}
-                  onKeyDown={(e) => e.key === 'Enter' && nextStep()}
-                />
-                <p className="mt-4 text-sm tracking-[0.3em] font-bold text-white/40 uppercase">
-                  {steps[currentStep].subtext}
-                </p>
-              </div>
+      {/* 3. THE INTERFACE: Editorial Rose Island Layout */}
+      <main className="relative z-10 flex flex-col justify-center min-h-screen px-6 lg:px-24">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, x: -40 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 40 }}
+            className="max-w-4xl"
+          >
+            <span className="text-orange-600 font-black text-xs tracking-[0.6em] uppercase mb-4 block">STEP {steps[currentStep].id}</span>
+            <h1 className="text-7xl md:text-9xl font-black text-white uppercase tracking-tighter leading-none mb-12">
+              {steps[currentStep].title}<span className="text-orange-600">.</span>
+            </h1>
 
-              <div className="mt-12 flex gap-4">
-                {currentStep < steps.length - 1 ? (
-                  <Button onClick={nextStep} className="bg-white text-black hover:bg-orange-600 hover:text-white px-8 py-6 rounded-none font-black tracking-widest uppercase">
-                    Continue <ChevronRight className="ml-2" />
-                  </Button>
-                ) : (
-                  <Button 
-                    onClick={() => setIsLaunching(true)} 
-                    className="bg-orange-600 text-white hover:bg-white hover:text-black px-12 py-8 rounded-none font-black text-2xl tracking-[0.2em] uppercase transition-all duration-500 shadow-[0_0_40px_rgba(255,77,0,0.4)]"
-                  >
-                    {isLaunching ? "Ignition Started..." : "Initialize Launch"}
-                  </Button>
-                )}
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+            <div className="relative">
+              <input 
+                className="w-full bg-transparent border-b-4 border-white/20 py-6 text-4xl md:text-6xl text-white font-black uppercase outline-none focus:border-orange-600 transition-colors placeholder:text-white/5"
+                placeholder={steps[currentStep].placeholder}
+                autoFocus
+              />
+            </div>
 
-        {/* Right Side: Status Telemetry (Chrono Style) */}
-        <div className="hidden lg:flex w-2/5 flex-col justify-center p-12 bg-white/5 backdrop-blur-md border-l border-white/10">
-          <div className="space-y-8">
-            <h3 className="text-[10px] tracking-[0.5em] uppercase text-white/40 font-black border-b border-white/10 pb-4">Manifest Telemetry</h3>
-            {steps.map((step, idx) => (
-              <div key={step.id} className={`transition-all duration-700 ${idx <= currentStep ? "opacity-100" : "opacity-10"}`}>
-                <div className="flex items-center gap-4 mb-2">
-                  <step.icon className={`h-4 w-4 ${idx === currentStep ? "text-orange-500" : "text-white"}`} />
-                  <span className="text-[10px] tracking-widest uppercase font-bold">{step.title}</span>
-                </div>
-                <div className="h-1 bg-white/10 w-full overflow-hidden">
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    animate={{ width: idx <= currentStep ? "100%" : "0%" }}
-                    className="h-full bg-orange-600"
-                  />
-                </div>
-                <p className="mt-1 text-[9px] font-mono text-white/50 truncate italic">
-                  {formData[step.field] ? `VERIFIED: ${formData[step.field]}` : "AWAITING INPUT..."}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+            <div className="mt-16">
+              {currentStep < steps.length - 1 ? (
+                <button 
+                  onClick={() => setCurrentStep(s => s + 1)}
+                  className="group flex items-center gap-4 text-white text-xl font-black uppercase tracking-widest hover:text-orange-600 transition-colors"
+                >
+                  Confirm Entry <ChevronRight className="group-hover:translate-x-2 transition-transform" />
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setIsLaunching(true)}
+                  className="bg-orange-600 hover:bg-white hover:text-orange-600 px-12 py-8 text-2xl font-black uppercase tracking-widest text-white transition-all shadow-[0_0_50px_rgba(255,77,0,0.3)]"
+                >
+                  Initiate Launch
+                </button>
+              )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </main>
 
-      {/* Full Screen Launch Overlay */}
-      <AnimatePresence>
-        {isLaunching && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="fixed inset-0 z-[100] bg-orange-600 flex flex-col items-center justify-center text-center p-6"
-          >
-            <motion.div 
-              animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
-              transition={{ repeat: Infinity, duration: 0.5 }}
-            >
-              <Rocket className="h-32 w-32 text-white mb-8" />
-            </motion.div>
-            <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter text-white mb-4">Ignition Sequence</h2>
-            <p className="text-white/80 tracking-[0.5em] uppercase text-sm animate-pulse">Establishing Micronation in the cloud...</p>
+      {/* 4. THE TELEMETRY: Small technical details */}
+      <footer className="absolute bottom-12 left-12 right-12 flex justify-between items-end pointer-events-none opacity-40">
+        <div className="text-[10px] font-mono tracking-widest text-white leading-relaxed">
+          LAT: 44.1105 N<br />LON: 12.6105 E
+        </div>
+        <div className="text-[10px] font-mono tracking-widest text-white uppercase">
+          Launch Sandbox Architect // V3.0
+        </div>
+      </footer>
+
+      {/* Ignition Screen Shake */}
+      {isLaunching && (
+        <motion.div 
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          className="fixed inset-0 z-[100] bg-orange-600 flex items-center justify-center text-white"
+        >
+          <motion.div animate={{ x: [-2, 2, -2], y: [1, -1, 1] }} transition={{ repeat: Infinity, duration: 0.1 }}>
+            <h2 className="text-9xl font-black uppercase italic tracking-tighter">Ignition</h2>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </motion.div>
+      )}
     </div>
   );
 }
