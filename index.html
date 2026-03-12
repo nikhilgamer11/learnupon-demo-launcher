@@ -8,73 +8,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;900&display=swap" rel="stylesheet">
     <style>
         :root { --orange: #FF4D00; --glow: rgba(255, 77, 0, 0.8); }
-        body { background-color: #000; color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; scroll-behavior: smooth; }
+        body { background-color: #000; color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
         .heavy { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; line-height: 0.9; }
-        #progressBar { position: fixed; top: 0; left: 0; height: 6px; background: var(--orange); box-shadow: 0 0 25px var(--orange); z-index: 100; width: 0%; transition: width 0.3s; }
-        #missionClock { position: fixed; top: 2rem; right: 2rem; z-index: 60; font-family: 'Archivo Black'; font-size: 2rem; color: var(--orange); text-shadow: 0 0 15px var(--glow); }
-        .ambient-wrapper { position: fixed; inset: 0; z-index: -2; opacity: 0.4; filter: saturate(0.7) brightness(0.5); pointer-events: none; }
-        #ambientPlayer { width: 100%; height: 100%; transform: scale(1.2); }
         .section-frame { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; }
-        .line-input { background: transparent; border: none; border-bottom: 3px solid rgba(255, 255, 255, 0.4); font-family: 'Archivo Black', sans-serif; font-size: clamp(1.5rem, 5vw, 4rem); width: 80%; text-align: center; outline: none; transition: 0.5s; text-transform: uppercase; color: white; }
-        .line-input:focus { border-bottom-color: var(--orange); filter: drop-shadow(0 0 20px var(--glow)); }
+        .line-input { background: transparent; border: none; border-bottom: 3px solid rgba(255, 255, 255, 0.4); font-family: 'Archivo Black'; font-size: clamp(1.5rem, 5vw, 3rem); width: 80%; text-align: center; outline: none; color: white; margin-bottom: 2rem; }
+        .line-input:focus { border-bottom-color: var(--orange); }
         #launchOverlay { position: fixed; inset: 0; background: #000; z-index: 200; display: none; align-items: center; justify-content: center; }
-        #starlinkVideo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 10; }
-        #countdownContainer { position: relative; z-index: 20; text-align: center; }
-        .btn-launch { background: var(--orange); padding: 2rem 5rem; font-family: 'Archivo Black'; font-size: 2rem; box-shadow: 0 0 40px var(--glow); transition: 0.4s; color: white; border: none; cursor: pointer; }
+        #starlinkVideo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        #cdText { position: relative; z-index: 210; font-size: 15vw; }
+        .btn-launch { background: var(--orange); padding: 2rem 5rem; font-family: 'Archivo Black'; font-size: 2rem; color: white; border: none; cursor: pointer; box-shadow: 0 0 30px var(--glow); }
     </style>
 </head>
 <body>
 
-    <div id="progressBar"></div>
-    <div id="missionClock">T-MINUS: 5</div>
-
-    <div class="ambient-wrapper"><div id="ambientPlayer"></div></div>
-
     <form id="architectForm">
-        <section class="section-frame" data-step="5">
+        <section class="section-frame">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Commander & Portal</h1>
-            <input type="email" id="commander_email" class="line-input !text-2xl mb-8" placeholder="YOUR_EMAIL@DOMAIN.COM" required>
-            <input type="text" id="subdomain" class="line-input" placeholder="PORTAL_ID" required>
+            <input type="email" id="commander_email" class="line-input" placeholder="EMAIL" required>
+            <input type="text" id="subdomain" class="line-input" placeholder="PORTAL SUBDOMAIN" required>
         </section>
 
-        <section class="section-frame" data-step="4">
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-16">Security Clearance</h1>
-            <input type="text" id="api_user" class="line-input !text-2xl mb-8" placeholder="API KEY" required>
-            <input type="password" id="api_pass" class="line-input !text-2xl" placeholder="API SECRET" required>
+        <section class="section-frame">
+            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">API Credentials</h1>
+            <input type="text" id="api_user" class="line-input" placeholder="API KEY" required>
+            <input type="password" id="api_pass" class="line-input" placeholder="API SECRET" required>
         </section>
 
-        <section class="section-frame" data-step="3">
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Course Manifest</h1>
-            <input type="text" id="courses" class="line-input" placeholder="COURSE_NAME" required>
+        <section class="section-frame">
+            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Manifest</h1>
+            <input type="text" id="courses" class="line-input" placeholder="COURSE NAME" required>
+            <input type="text" id="groups" class="line-input" placeholder="GROUP NAME" required>
         </section>
 
-        <section class="section-frame" data-step="2">
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Group Architecture</h1>
-            <input type="text" id="groups" class="line-input" placeholder="GROUP_NAME" required>
-        </section>
-
-        <section class="section-frame" data-step="1">
-            <h1 class="heavy text-white text-6xl italic mb-12">Final Ignition.</h1>
-            <input type="datetime-local" class="line-input !text-3xl mb-16" required>
+        <section class="section-frame">
             <button type="submit" class="btn-launch heavy">INITIATE LAUNCH</button>
         </section>
     </form>
 
     <div id="launchOverlay">
-        <video id="starlinkVideo" playsinline><source src="Starlink launch.mp4" type="video/mp4"></video>
-        <div id="countdownContainer"><h1 id="cdText" class="heavy text-white text-[20vw] italic">5</h1></div>
-        <div id="successMsg" class="hidden absolute z-30 text-center bg-black/60 inset-0 flex flex-col items-center justify-center backdrop-blur-md">
-            <h1 class="heavy text-white text-7xl">ORBIT ACHIEVED</h1>
-            <button onclick="location.reload()" class="mt-12 border border-white/30 px-8 py-4 text-xs hover:bg-white hover:text-black">REBOOT SYSTEM</button>
+        <video id="starlinkVideo" playsinline muted><source src="Starlink launch.mp4" type="video/mp4"></video>
+        <h1 id="cdText" class="heavy italic">5</h1>
+        <div id="successMsg" class="hidden absolute z-[220] inset-0 bg-black/80 flex flex-col items-center justify-center">
+            <h1 class="heavy text-6xl">ORBIT ACHIEVED</h1>
+            <p class="mt-4">CHECK YOUR EMAIL & LOGS</p>
+            <button onclick="location.reload()" class="mt-8 border p-4">RESTART</button>
         </div>
     </div>
 
     <script>
-        // CRITICAL: Ensure this is your current Web App URL
-        const SCRIPT_URL = 'https://script.google.com/a/macros/learnupon.com/s/AKfycbxm3-K0J-xrvJcjPqlVm6yj0klmhW4sehC_N-4EsCm9oA4gEB-Q_YFP-RKXsEULTMy-dA/exec';
+        const SCRIPT_URL = 'https://script.google.com/a/macros/learnupon.com/s/AKfycbwMoFx-c7qf3G-OHmqNYP87svQBdAfJsgIkwa18TTFrw1zdn-r8ljNEZB3R31-EU3DR_w/exec';
 
         document.getElementById('architectForm').onsubmit = async (e) => {
             e.preventDefault();
+            
             const payload = {
                 commander: document.getElementById('commander_email').value,
                 subdomain: document.getElementById('subdomain').value,
@@ -85,16 +71,22 @@
             };
 
             document.getElementById('launchOverlay').style.display = 'flex';
-            const video = document.getElementById('starlinkVideo');
-            video.currentTime = 25; video.play();
+            const vid = document.getElementById('starlinkVideo');
+            vid.currentTime = 25;
+            vid.play();
 
-            try {
-                const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-                const result = await response.text();
-                if (result.includes("Error")) { alert("SYSTEM FAILURE: " + result); }
-            } catch (err) {
+            // Send to Google Apps Script
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                console.log("Payload transmitted to Mission Control.");
+            }).catch(err => {
+                alert("Launch Malfunction: Check Console");
                 console.error(err);
-            }
+            });
 
             let count = 5;
             const timer = setInterval(() => {
@@ -103,13 +95,11 @@
                 if(count <= 0) {
                     clearInterval(timer);
                     setTimeout(() => {
-                        document.getElementById('countdownContainer').classList.add('hidden');
                         document.getElementById('successMsg').classList.remove('hidden');
-                    }, 2000); 
+                    }, 2000);
                 }
             }, 1000);
         };
-        // Background Scroll & YT Logic omitted for brevity but remains same
     </script>
 </body>
 </html>
