@@ -1,28 +1,19 @@
 function doPost(e) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Logs") || ss.insertSheet("Logs");
+  let data;
+  
   try {
-    const data = JSON.parse(e.postData.contents);
+    data = JSON.parse(e.postData.contents);
     const authHeader = "Basic " + Utilities.base64Encode(data.username + ":" + data.password);
     const baseUrl = `https://${data.subdomain}.learnupon.com/api/v1`;
 
-    // 1. LOG TO GOOGLE SHEET
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName("Logs") || ss.insertSheet("Logs");
-    sheet.appendRow([new Date(), data.commander, data.subdomain, data.courses, data.groups]);
-
+    // 1. CREATE USERS
     const creds = { "password": "learnupon@123", "must_change_password": false };
-
-    // 2. CREATE LEARNER & MANAGER
     const learner = createLUUser(baseUrl, authHeader, "learner@learnupon.com", "Demo", "Learner", creds);
     const manager = createLUUser(baseUrl, authHeader, "manager@learnupon.com", "Demo", "Manager", creds);
 
-    // 3. CREATE ADDITIONAL TEAM MEMBERS
-    if(data.otherPeople) {
-      data.otherPeople.forEach(email => {
-        createLUUser(baseUrl, authHeader, email, "Team", "Member", creds);
-      });
-    }
-
-    // 4. CREATE COURSE & GROUP
+    // 2. CREATE COURSE & GROUP
     let courseId = "";
     if (data.courses) {
       const resp = UrlFetchApp.fetch(`${baseUrl}/courses`, {
@@ -39,7 +30,7 @@ function doPost(e) {
       });
     }
 
-    // 5. ILT SESSION & ENROLLMENT
+    // 3. ILT SESSION & ENROLLMENT
     if (courseId) {
       const event = UrlFetchApp.fetch(`${baseUrl}/ilt_sessions`, {
         "method": "post", "headers": { "Authorization": authHeader, "Content-Type": "application/json" },
@@ -54,16 +45,28 @@ function doPost(e) {
       });
     }
 
-    // 6. BRIEFING EMAIL
-    MailApp.sendEmail(data.commander, "🚀 Orbit Achieved", 
-      `Mission briefing for ${data.subdomain} complete.\n\n` +
-      `URL: https://${data.subdomain}.learnupon.com\n` +
-      `Learner: learner@learnupon.com / learnupon@123\n` +
-      `Manager: manager@learnupon.com / learnupon@123`);
+    // 4. LOG SUCCESS & SEND EMAIL
+    sheet.appendRow([new Date(), data.commander, data.subdomain, data.courses, data.groups, "SUCCESS"]);
+    
+    MailApp.sendEmail({
+      to: data.commander,
+      subject: "🚀 Orbit Achieved: Portal " + data.subdomain + " Configured",
+      htmlBody: `<h3>Commander,</h3><p>Portal architecture is complete.</p>
+                 <ul>
+                  <li><b>URL:</b> https://${data.subdomain}.learnupon.com</li>
+                  <li><b>Learner:</b> learner@learnupon.com / learnupon@123</li>
+                  <li><b>Manager:</b> manager@learnupon.com / learnupon@123</li>
+                 </ul>`
+    });
 
-    return ContentService.createTextOutput(JSON.stringify({"status":"OK"})).setMimeType(ContentService.MimeType.JSON);
-  } catch (f) {
-    return ContentService.createTextOutput(JSON.stringify({"status":"ERR", "log": f.toString()})).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
+
+  } catch (error) {
+    // LOG ERROR TO SHEET FOR HISTORY
+    const errorMsg = error.toString();
+    sheet.appendRow([new Date(), data ? data.commander : "Unknown", data ? data.subdomain : "N/A", "N/A", "N/A", "ERROR: " + errorMsg]);
+    
+    return ContentService.createTextOutput("Error: " + errorMsg).setMimeType(ContentService.MimeType.TEXT);
   }
 }
 
