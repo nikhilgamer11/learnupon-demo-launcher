@@ -1,10 +1,9 @@
 function doPost(e) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName("Logs") || ss.insertSheet("Logs");
-  let data;
   
   try {
-    data = JSON.parse(e.postData.contents);
+    const data = JSON.parse(e.postData.contents);
     const authHeader = "Basic " + Utilities.base64Encode(data.username + ":" + data.password);
     const baseUrl = `https://${data.subdomain}.learnupon.com/api/v1`;
 
@@ -13,16 +12,17 @@ function doPost(e) {
     const learner = createLUUser(baseUrl, authHeader, "learner@learnupon.com", "Demo", "Learner", creds);
     const manager = createLUUser(baseUrl, authHeader, "manager@learnupon.com", "Demo", "Manager", creds);
 
-    // 2. CREATE COURSE & GROUP
+    // 2. CREATE COURSE
     let courseId = "";
     if (data.courses) {
-      const resp = UrlFetchApp.fetch(`${baseUrl}/courses`, {
+      const cResp = UrlFetchApp.fetch(`${baseUrl}/courses`, {
         "method": "post", "headers": { "Authorization": authHeader, "Content-Type": "application/json" },
         "payload": JSON.stringify({ "course": { "name": data.courses } })
       });
-      courseId = JSON.parse(resp.getContentText()).id;
+      courseId = JSON.parse(cResp.getContentText()).id;
     }
 
+    // 3. CREATE GROUP
     if (data.groups) {
       UrlFetchApp.fetch(`${baseUrl}/groups`, {
         "method": "post", "headers": { "Authorization": authHeader, "Content-Type": "application/json" },
@@ -30,43 +30,15 @@ function doPost(e) {
       });
     }
 
-    // 3. ILT SESSION & ENROLLMENT
-    if (courseId) {
-      const event = UrlFetchApp.fetch(`${baseUrl}/ilt_sessions`, {
-        "method": "post", "headers": { "Authorization": authHeader, "Content-Type": "application/json" },
-        "payload": JSON.stringify({
-          "ilt_session": { "name": "Mission Briefing", "course_id": courseId, "owner_id": manager.id, "start_date": new Date().toISOString() }
-        })
-      });
-      const sessionId = JSON.parse(event.getContentText()).id;
-      UrlFetchApp.fetch(`${baseUrl}/enrollments`, {
-        "method": "post", "headers": { "Authorization": authHeader, "Content-Type": "application/json" },
-        "payload": JSON.stringify({ "user_id": learner.id, "ilt_session_id": sessionId })
-      });
-    }
-
-    // 4. LOG SUCCESS & SEND EMAIL
+    // 4. LOG & EMAIL
     sheet.appendRow([new Date(), data.commander, data.subdomain, data.courses, data.groups, "SUCCESS"]);
-    
-    MailApp.sendEmail({
-      to: data.commander,
-      subject: "🚀 Orbit Achieved: Portal " + data.subdomain + " Configured",
-      htmlBody: `<h3>Commander,</h3><p>Portal architecture is complete.</p>
-                 <ul>
-                  <li><b>URL:</b> https://${data.subdomain}.learnupon.com</li>
-                  <li><b>Learner:</b> learner@learnupon.com / learnupon@123</li>
-                  <li><b>Manager:</b> manager@learnupon.com / learnupon@123</li>
-                 </ul>`
-    });
+    MailApp.sendEmail(data.commander, "🚀 Orbit Achieved", "Portal " + data.subdomain + " is configured.\n\nLearner: learner@learnupon.com\nManager: manager@learnupon.com\nPass: learnupon@123");
 
-    return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
+    return ContentService.createTextOutput("SUCCESS").setMimeType(ContentService.MimeType.TEXT);
 
-  } catch (error) {
-    // LOG ERROR TO SHEET FOR HISTORY
-    const errorMsg = error.toString();
-    sheet.appendRow([new Date(), data ? data.commander : "Unknown", data ? data.subdomain : "N/A", "N/A", "N/A", "ERROR: " + errorMsg]);
-    
-    return ContentService.createTextOutput("Error: " + errorMsg).setMimeType(ContentService.MimeType.TEXT);
+  } catch (err) {
+    sheet.appendRow([new Date(), "ERROR", "ERROR", "ERROR", "ERROR", err.toString()]);
+    return ContentService.createTextOutput("Error: " + err.toString()).setMimeType(ContentService.MimeType.TEXT);
   }
 }
 
