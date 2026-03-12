@@ -1,21 +1,26 @@
+/**
+ * GAS Backend: Handles Portal Creation via API
+ */
 function doPost(e) {
-  var courseName = e.parameter.courseName;
-  var learnerEmail = e.parameter.learnerEmail;
-  var subject = 'Demo Portal Access';
-  var message = 'Dear learner,\n\nYou have been granted access to the demo portal for the course: ' + courseName + '.\n\nBest regards,\nThe Team';
+  try {
+    var data = JSON.parse(e.postData.contents);
+    
+    // Extract variables from the mission control form
+    var subdomain = data.subdomain;
+    var apiUser = data.username;
+    var apiPass = data.password;
+    var courses = data.courses.split(',');
+    var groups = data.groups.split(',');
 
-  // Send email to learner
-  MailApp.sendEmail(learnerEmail, subject, message);
+    // PROCESSOR: This is where you call your specific platform APIs
+    // Example: createPortal(subdomain, apiUser, apiPass);
+    // Example: enrollGroups(courses, groups);
 
-  // Logic to create demo portal
-  createDemoPortal(courseName, learnerEmail);
-
-  // Return success response
-  return ContentService.createTextOutput(JSON.stringify({success: true, message: 'Email sent and demo portal created.'})).setMimeType(ContentService.MimeType.JSON);
-}
-
-function createDemoPortal(courseName, learnerEmail) {
-  // Placeholder for demo portal creation logic
-  Logger.log('Creating demo portal for: ' + courseName + ' for learner: ' + learnerEmail);
-  // Implement your demo portal creation logic here.
+    return ContentService.createTextOutput(JSON.stringify({"status": "SUCCESS"}))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({"status": "ERROR", "message": error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
