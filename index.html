@@ -3,165 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SANDBOX ARCHITECT | LEARNUPON</title>
+    <title>GALACTIC ARCHITECT | MISSION CONTROL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;900&display=swap" rel="stylesheet">
     <style>
-        :root { --orange: #FF4D00; --bg: #0F0F0F; }
-        body { background-color: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
+        :root { --orange: #FF4D00; --glow: rgba(255, 77, 0, 0.6); }
+        body { background-color: #000; color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
         .heavy { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; line-height: 0.9; }
-        
-        /* Background Cinematic Layer */
-        .video-bg {
+
+        /* Next Level: Starfield */
+        .stars {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2; object-fit: cover; opacity: 0.4; filter: contrast(120%) grayscale(20%);
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -3;
         }
 
-        /* Rose Island Sectioning */
+        .video-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; object-fit: cover; opacity: 0.3; filter: saturate(0) brightness(0.8);
+        }
+
         .section-frame {
             min-height: 100vh; display: flex; flex-direction: column;
             justify-content: center; align-items: center; text-align: center;
             padding: 2rem; position: relative;
         }
 
+        /* Glowing Inputs */
         .line-input {
-            background: transparent; border: none; border-bottom: 5px solid white;
+            background: transparent; border: none; border-bottom: 2px solid rgba(255, 77, 0, 0.2);
             font-family: 'Archivo Black', sans-serif; font-size: clamp(1.5rem, 5vw, 4rem);
-            width: 85%; text-align: center; outline: none; transition: 0.4s;
+            width: 80%; text-align: center; outline: none; transition: 0.5s;
             text-transform: uppercase; color: white;
         }
-        .line-input:focus { border-bottom-color: var(--orange); transform: scale(1.02); }
-        .line-input::placeholder { color: rgba(255,255,255,0.05); }
-
-        .btn-launch {
-            background: var(--orange); color: white; padding: 1.5rem 3.5rem;
-            font-family: 'Archivo Black', sans-serif; font-size: 1.8rem;
-            letter-spacing: 0.2em; transition: all 0.3s;
-            box-shadow: 0 0 50px rgba(255, 77, 0, 0.4); cursor: pointer;
+        .line-input:focus { 
+            border-bottom-color: var(--orange); 
+            filter: drop-shadow(0 0 15px var(--glow));
+            transform: translateY(-5px);
         }
-        .btn-launch:hover { background: white; color: var(--orange); transform: scale(1.1); }
-        
-        /* Ignition Overlay */
+
+        .hud-text {
+            position: absolute; font-size: 8px; font-weight: 900; 
+            letter-spacing: 0.5em; color: var(--orange); opacity: 0.5;
+        }
+
+        /* Launch Button */
+        .btn-launch {
+            background: var(--orange); color: white; padding: 1.5rem 4rem;
+            font-family: 'Archivo Black', sans-serif; font-size: 1.5rem;
+            letter-spacing: 0.3em; transition: all 0.4s;
+            box-shadow: 0 0 30px var(--glow); cursor: pointer; border: none;
+        }
+        .btn-launch:hover { 
+            background: white; color: var(--orange); 
+            box-shadow: 0 0 60px white; transform: scale(1.1);
+        }
+
         #ignition {
-            position: fixed; inset: 0; background: var(--orange); z-index: 100;
+            position: fixed; inset: 0; background: #000; z-index: 100;
             display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .moon-glow {
+            position: absolute; width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            z-index: -1; pointer-events: none;
         }
     </style>
 </head>
 <body>
 
+    <div class="stars"></div>
+    <div class="moon-glow top-0 right-0"></div>
     <video autoplay muted loop playsinline class="video-bg">
         <source src="videoplayback.mp4" type="video/mp4">
     </video>
 
-    <header class="fixed top-10 left-0 w-full flex flex-col items-center z-50 pointer-events-none">
-        <img src="logo.jpeg" class="h-12 w-auto mb-2 invert brightness-200 opacity-80">
-        <h2 class="text-white font-black tracking-[1.5em] uppercase text-[10px]">
-            Sandbox Architect
-        </h2>
+    <header class="fixed top-12 left-0 w-full flex flex-col items-center z-50 pointer-events-none">
+        <img src="logo.jpeg" class="h-10 mb-2 invert brightness-200 drop-shadow-[0_0_15px_white]">
+        <h2 class="heavy text-[9px] tracking-[2em] text-white/50">MISSION: ARCHITECT</h2>
     </header>
 
     <form id="architectForm">
         <section class="section-frame">
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.6em] mb-2">Step 01 / Target Subdomain</h1>
-            <input type="text" id="subdomain" class="line-input mt-8" placeholder="PORTAL NAME" required>
+            <div class="hud-text top-24 left-24">COORD: 44.1105 N / 12.6105 E</div>
+            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Sector Subdomain</h1>
+            <input type="text" id="subdomain" class="line-input" placeholder="PORTAL_ID" required>
         </section>
 
-        <section class="section-frame bg-white/95 backdrop-blur-sm">
-            <h1 class="heavy text-black text-xs tracking-[0.6em] mb-16">Step 02 / Access Keys</h1>
-            <div class="w-full flex flex-col items-center gap-16">
-                <div class="w-full flex flex-col items-center">
-                    <label class="heavy text-[10px] text-black/40 tracking-widest mb-2">API Username (Key)</label>
-                    <input type="text" id="apiKey" 
-                           class="line-input !border-black !text-black !text-3xl placeholder:text-black/10" 
-                           placeholder="E.G. API_USER_123" required>
+        <section class="section-frame bg-black/80 backdrop-blur-xl border-y border-orange-600/10">
+            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-16">Authorization</h1>
+            <div class="w-full flex flex-col items-center gap-20">
+                <div class="w-full">
+                    <label class="heavy text-[9px] text-orange-600/40 tracking-widest block mb-4">API Username</label>
+                    <input type="text" id="apiKey" class="line-input !text-2xl" placeholder="USER_ALPHA" required>
                 </div>
-                <div class="w-full flex flex-col items-center">
-                    <label class="heavy text-[10px] text-black/40 tracking-widest mb-2">API Password (Secret)</label>
-                    <input type="password" id="apiPass" 
-                           class="line-input !border-black !text-black !text-3xl placeholder:text-black/10" 
-                           placeholder="••••••••••••" required>
+                <div class="w-full">
+                    <label class="heavy text-[9px] text-orange-600/40 tracking-widest block mb-4">API Password</label>
+                    <input type="password" id="apiPass" class="line-input !text-2xl" placeholder="••••••••" required>
                 </div>
             </div>
         </section>
 
         <section class="section-frame">
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.6em] mb-2">Step 03 / Course Manifest</h1>
-            <input type="text" id="courseList" class="line-input mt-8" placeholder="COURSES (COMMA SEPARATED)" required>
-            <p class="text-[10px] uppercase tracking-widest mt-6 opacity-40 italic">List 7+ course names without emojis</p>
+            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Course Manifest</h1>
+            <input type="text" id="courseList" class="line-input" placeholder="COMMA_SEPARATED" required>
         </section>
 
-        <section class="section-frame bg-white/95 backdrop-blur-sm">
-            <h1 class="heavy text-black text-xs tracking-[0.6em] mb-2">Step 04 / Group Structure</h1>
-            <input type="text" id="groupList" class="line-input !border-black !text-black mt-8" placeholder="GROUPS (COMMA SEPARATED)" required>
-            <p class="text-[10px] uppercase tracking-widest mt-6 text-black/40 italic">List 3+ group names as a comma separated list</p>
-        </section>
-
-        <section class="section-frame bg-orange-600">
-            <h1 class="heavy text-white text-5xl mb-12 italic tracking-tighter">Ready for Orbit.</h1>
-            <input type="datetime-local" id="liveDate" class="line-input !border-white !text-2xl mb-12" required>
+        <section class="section-frame bg-gradient-to-t from-orange-950/40 to-black">
+            <h1 class="heavy text-white text-5xl italic mb-12 tracking-tighter">Ready for Orbit.</h1>
+            <input type="datetime-local" id="liveDate" class="line-input !border-white/10 !text-2xl mb-16" required>
             <button type="submit" id="submitBtn" class="btn-launch">INITIATE LAUNCH</button>
-            <p id="status" class="mt-8 font-black uppercase text-[10px] tracking-[0.4em] text-black h-4"></p>
         </section>
     </form>
 
     <div id="ignition">
-        <h1 class="heavy text-white text-8xl md:text-9xl animate-pulse italic">Ignition</h1>
+        <h1 class="heavy text-white text-7xl italic animate-pulse">Ignition</h1>
+        <p class="heavy text-orange-600 text-xs tracking-widest mt-8">Synthesizing Propulsion Audio...</p>
     </div>
 
     <script>
-        const GAS_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE";
+        // --- AUDIO ENGINE (Rocket Rumble) ---
+        const playRocketSound = () => {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const bufferSize = 2 * audioCtx.sampleRate;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) { output[i] = Math.random() * 2 - 1; }
 
+            const whiteNoise = audioCtx.createBufferSource();
+            whiteNoise.buffer = noiseBuffer;
+            whiteNoise.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(40, audioCtx.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 4);
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 1);
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 5);
+
+            whiteNoise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            whiteNoise.start();
+        };
+
+        // --- LAUNCH LOGIC ---
         document.getElementById('architectForm').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('status');
             const overlay = document.getElementById('ignition');
-            
-            const sub = document.getElementById('subdomain').value.trim();
-            if (sub.includes('.') || sub.includes(' ')) {
-                status.innerText = "ERROR: SUBDOMAIN MUST BE A SINGLE WORD";
-                return;
-            }
-
-            btn.innerText = "LAUNCHING...";
-            status.innerText = "ESTABLISHING API SECURE CHANNEL...";
             overlay.style.display = 'flex';
+            
+            playRocketSound(); // Trigger synthesized rumble
 
             let intensity = 0;
             const shake = setInterval(() => {
-                intensity = Math.min(intensity + 0.3, 12);
+                intensity = Math.min(intensity + 0.5, 25);
                 const x = (Math.random() - 0.5) * intensity;
                 const y = (Math.random() - 0.5) * intensity;
                 document.body.style.transform = `translate(${x}px, ${y}px)`;
             }, 30);
 
-            const payload = {
-                subdomain: sub.toLowerCase(),
-                apiKey: document.getElementById('apiKey').value.trim(),
-                apiPass: document.getElementById('apiPass').value.trim(),
-                courses: document.getElementById('courseList').value.split(',').map(s => s.trim()),
-                groups: document.getElementById('groupList').value.split(',').map(s => s.trim()),
-                liveDate: document.getElementById('liveDate').value
-            };
-
-            try {
-                await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                
-                setTimeout(() => {
-                    clearInterval(shake);
-                    document.body.style.transform = 'none';
-                    status.innerText = "MISSION SUCCESS. PORTAL DEPLOYED.";
-                    btn.innerText = "ORBIT ACHIEVED";
-                    overlay.innerHTML = '<h1 class="heavy text-white text-6xl">DEPLOYMENT COMPLETE</h1>';
-                }, 4000);
-
-            } catch (err) {
+            setTimeout(() => {
                 clearInterval(shake);
-                overlay.style.display = 'none';
-                status.innerText = "LAUNCH ABORTED. CHECK API CONNECTION.";
-                btn.innerText = "RETRY MISSION";
-            }
+                document.body.style.transform = 'none';
+                overlay.innerHTML = '<h1 class="heavy text-white text-6xl">ORBIT ACHIEVED</h1>';
+            }, 5000);
         };
     </script>
 </body>
