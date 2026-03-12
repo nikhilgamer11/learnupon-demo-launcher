@@ -7,112 +7,99 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;900&display=swap" rel="stylesheet">
     <style>
-        :root { --orange: #FF4D00; --glow: rgba(255, 77, 0, 0.6); }
+        :root { --orange: #FF4D00; --glow: rgba(255, 77, 0, 0.8); }
         body { background-color: #000; color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; scroll-behavior: smooth; }
         .heavy { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; line-height: 0.9; }
 
-        /* Cinematic Backgrounds */
-        .stars { position: fixed; inset: 0; background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%); z-index: -3; }
-        .video-bg { position: fixed; inset: 0; z-index: -2; object-fit: cover; opacity: 0.25; filter: saturate(0) brightness(0.6); }
-
-        /* HUD & Progress Elements */
-        #progressBar { position: fixed; top: 0; left: 0; height: 4px; background: var(--orange); box-shadow: 0 0 20px var(--orange); z-index: 100; transition: width 0.3s; width: 0%; }
-        #missionClock { position: fixed; top: 2rem; right: 2rem; z-index: 60; font-family: 'Archivo Black'; font-size: 2rem; color: var(--orange); text-shadow: 0 0 10px var(--glow); }
+        /* Progress & HUD */
+        #progressBar { position: fixed; top: 0; left: 0; height: 6px; background: var(--orange); box-shadow: 0 0 25px var(--orange); z-index: 100; transition: width 0.3s; width: 0%; }
+        #missionClock { position: fixed; top: 2rem; right: 2rem; z-index: 60; font-family: 'Archivo Black'; font-size: 2rem; color: var(--orange); text-shadow: 0 0 15px var(--glow); }
 
         .section-frame { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; position: relative; }
 
         /* Glowing Mission Inputs */
         .line-input {
-            background: transparent; border: none; border-bottom: 2px solid rgba(255, 77, 0, 0.2);
+            background: transparent; border: none; border-bottom: 3px solid rgba(255, 255, 255, 0.2);
             font-family: 'Archivo Black', sans-serif; font-size: clamp(1.5rem, 5vw, 4rem);
             width: 80%; text-align: center; outline: none; transition: 0.5s;
             text-transform: uppercase; color: white;
         }
-        .line-input:focus { border-bottom-color: var(--orange); filter: drop-shadow(0 0 15px var(--glow)); transform: translateY(-5px); }
+        .line-input:focus { border-bottom-color: var(--orange); filter: drop-shadow(0 0 20px var(--glow)); }
+
+        /* Visible Calendar Icon Fix */
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(100%) sepia(100%) saturate(10000%) hue-rotate(0deg);
+            cursor: pointer; font-size: 1.5rem;
+        }
 
         /* Overlay Systems */
         #countdownOverlay, #finalVideoOverlay {
             position: fixed; inset: 0; background: #000; z-index: 200;
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
-        #finalVideo { width: 100%; height: 100%; object-fit: cover; }
-        
-        .hud-corner { position: absolute; font-size: 8px; font-weight: 900; letter-spacing: 0.5em; color: var(--orange); opacity: 0.4; }
+
+        .btn-launch {
+            background: var(--orange); padding: 2rem 5rem; font-family: 'Archivo Black'; font-size: 2rem;
+            box-shadow: 0 0 40px var(--glow); transition: 0.4s;
+        }
+        .btn-launch:hover { background: white; color: var(--orange); transform: scale(1.05); }
     </style>
 </head>
 <body>
 
     <div id="progressBar"></div>
     <div id="missionClock">T-MINUS: 5</div>
-    <div class="stars"></div>
-    
-    <video autoplay muted loop playsinline class="video-bg">
-        <source src="videoplayback.mp4" type="video/mp4">
-    </video>
-
-    <header class="fixed top-12 left-0 w-full flex flex-col items-center z-50 pointer-events-none">
-        <img src="logo.jpeg" class="h-10 mb-2 invert brightness-200 drop-shadow-[0_0_15px_white]">
-        <h2 class="heavy text-[9px] tracking-[2em] text-white/50">ARCHITECT TERMINAL</h2>
-    </header>
 
     <form id="architectForm">
         <section class="section-frame" data-step="5">
-            <div class="hud-corner top-24 left-24">SYS_LINK: ACTIVE</div>
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Target Subdomain</h1>
+            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Sector Subdomain</h1>
             <input type="text" id="subdomain" class="line-input" placeholder="PORTAL_ID" required>
         </section>
 
-        <section class="section-frame bg-black/80 backdrop-blur-xl border-y border-orange-600/10" data-step="4">
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-16">Security Clearance</h1>
-            <div class="w-full flex flex-col items-center gap-12">
-                <input type="text" id="apiKey" class="line-input !text-2xl" placeholder="API USERNAME" required>
-                <input type="password" id="apiPass" class="line-input !text-2xl" placeholder="API SECRET" required>
+        <section class="section-frame bg-gradient-to-t from-orange-950/60 to-black" data-step="1">
+            <h1 class="heavy text-white text-6xl italic mb-12 tracking-tighter">Final Ignition.</h1>
+            <div class="relative w-4/5">
+                <input type="datetime-local" id="liveDate" class="line-input !text-3xl mb-16" required>
             </div>
-        </section>
-
-        <section class="section-frame" data-step="3">
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Course Manifest</h1>
-            <input type="text" id="courseList" class="line-input" placeholder="COURSES_COMMA_SEPARATED" required>
-        </section>
-
-        <section class="section-frame bg-black/80 backdrop-blur-xl border-y border-orange-600/10" data-step="2">
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Group Architecture</h1>
-            <input type="text" id="groupList" class="line-input" placeholder="GROUPS_COMMA_SEPARATED" required>
-            <p class="text-[10px] heavy tracking-[0.3em] mt-8 text-orange-600/40">Define user distribution logic</p>
-        </section>
-
-        <section class="section-frame bg-gradient-to-t from-orange-950/40 to-black" data-step="1">
-            <h1 class="heavy text-white text-5xl italic mb-12">Final Ignition.</h1>
-            <input type="datetime-local" id="liveDate" class="line-input !border-white/10 !text-2xl mb-16" required>
-            <button type="submit" id="submitBtn" class="bg-orange-600 heavy px-16 py-8 text-2xl hover:bg-white hover:text-orange-600 transition-all duration-500 shadow-[0_0_50px_var(--orange)]">INITIATE LAUNCH</button>
+            <button type="submit" class="btn-launch heavy">INITIATE LAUNCH</button>
         </section>
     </form>
 
     <div id="countdownOverlay">
         <h1 id="cdText" class="heavy text-white text-[20vw] italic">5</h1>
-        <p class="heavy text-orange-600 tracking-[1em] text-sm">IGNITION SEQUENCE START</p>
     </div>
 
     <div id="finalVideoOverlay">
-        <video id="finalVideo" playsinline>
-            <source src="YOUR_ROCKET_SMOKE_VIDEO.mp4" type="video/mp4">
-        </video>
-        <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/50">
-            <h1 class="heavy text-white text-6xl tracking-tighter">ORBIT ACHIEVED</h1>
-            <p class="heavy text-orange-600 tracking-widest mt-4">PORTAL IS NOW LIVE</p>
-            <button onclick="location.reload()" class="mt-12 border border-white/20 heavy px-8 py-4 text-[10px] hover:bg-white hover:text-black transition-all">RESTART ARCHITECT</button>
+        <div id="player" class="absolute inset-0 pointer-events-none"></div>
+        <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 z-10">
+            <h1 class="heavy text-white text-7xl drop-shadow-2xl">ORBIT ACHIEVED</h1>
+            <p class="heavy text-orange-600 tracking-[1em] mt-4">PORTAL DEPLOYMENT SUCCESSFUL</p>
         </div>
     </div>
 
     <script>
-        // Progress Bar & Scrolling T-Minus Clock
+        // YouTube API Loading
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '100%', width: '100%',
+                videoId: 'C3iHAgwIYtI', // Dramatic Video ID
+                playerVars: { 'autoplay': 0, 'controls': 0, 'mute': 1, 'loop': 1, 'playlist': 'C3iHAgwIYtI' }
+            });
+        }
+
+        // Progress Tracking
         window.onscroll = () => {
             const winScroll = document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             document.getElementById("progressBar").style.width = (winScroll / height * 100) + "%";
 
-            const sections = document.querySelectorAll('section');
-            sections.forEach(sec => {
+            document.querySelectorAll('section').forEach(sec => {
                 const rect = sec.getBoundingClientRect();
                 if(rect.top >= -100 && rect.top <= window.innerHeight/2) {
                     document.getElementById('missionClock').innerText = `T-MINUS: ${sec.dataset.step}`;
@@ -120,53 +107,26 @@
             });
         };
 
-        // Synthesized Rocket Rumble
-        const playRumble = () => {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const noise = ctx.createBufferSource();
-            const buffer = ctx.createBuffer(1, ctx.sampleRate * 8, ctx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < buffer.length; i++) data[i] = Math.random() * 2 - 1;
-            noise.buffer = buffer; noise.loop = true;
-            const filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 60;
-            const gain = ctx.createGain(); gain.gain.setValueAtTime(0, ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.7, ctx.currentTime + 1);
-            noise.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
-            noise.start();
-        };
-
-        // Final Launch Sequence
-        document.getElementById('architectForm').onsubmit = async (e) => {
+        // Launch Logic
+        document.getElementById('architectForm').onsubmit = (e) => {
             e.preventDefault();
             const cdOverlay = document.getElementById('countdownOverlay');
-            const cdText = document.getElementById('cdText');
             const vidOverlay = document.getElementById('finalVideoOverlay');
-            const vid = document.getElementById('finalVideo');
-
             cdOverlay.style.display = 'flex';
-            playRumble();
 
             let count = 5;
             const timer = setInterval(() => {
                 count--;
-                cdText.innerText = count;
-                if(count === 3) document.body.style.animation = "shake 0.1s infinite";
+                document.getElementById('cdText').innerText = count;
                 if(count <= 0) {
                     clearInterval(timer);
                     cdOverlay.style.display = 'none';
                     vidOverlay.style.display = 'flex';
-                    vid.play();
+                    player.playVideo();
+                    player.unMute();
                 }
             }, 1000);
         };
     </script>
-
-    <style>
-        @keyframes shake {
-            0% { transform: translate(2px, 2px); }
-            50% { transform: translate(-2px, -2px); }
-            100% { transform: translate(0, 0); }
-        }
-    </style>
 </body>
 </html>
