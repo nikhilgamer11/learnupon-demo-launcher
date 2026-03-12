@@ -11,22 +11,21 @@
         body { background-color: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
         .heavy { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; line-height: 0.9; }
         
-        /* Darker, high-contrast video */
+        /* Background Cinematic Layer */
         .video-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2; object-fit: cover; opacity: 0.35; filter: contrast(130%) grayscale(60%);
+            z-index: -2; object-fit: cover; opacity: 0.4; filter: contrast(120%) grayscale(20%);
         }
-        
-        /* Uniform Dark Sections */
+
+        /* Rose Island Sectioning */
         .section-frame {
             min-height: 100vh; display: flex; flex-direction: column;
             justify-content: center; align-items: center; text-align: center;
             padding: 2rem; position: relative;
         }
 
-        /* Line Input - Unified Black/Orange Style */
         .line-input {
-            background: transparent; border: none; border-bottom: 5px solid rgba(255,255,255,0.15);
+            background: transparent; border: none; border-bottom: 5px solid white;
             font-family: 'Archivo Black', sans-serif; font-size: clamp(1.5rem, 5vw, 4rem);
             width: 85%; text-align: center; outline: none; transition: 0.4s;
             text-transform: uppercase; color: white;
@@ -34,7 +33,6 @@
         .line-input:focus { border-bottom-color: var(--orange); transform: scale(1.02); }
         .line-input::placeholder { color: rgba(255,255,255,0.05); }
 
-        /* Unified Button Style */
         .btn-launch {
             background: var(--orange); color: white; padding: 1.5rem 3.5rem;
             font-family: 'Archivo Black', sans-serif; font-size: 1.8rem;
@@ -69,19 +67,19 @@
             <input type="text" id="subdomain" class="line-input mt-8" placeholder="PORTAL NAME" required>
         </section>
 
-        <section class="section-frame bg-black border-l-8 border-orange-600/20 backdrop-blur-sm p-12 lg:p-24">
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.6em] mb-16">Step 02 / Access Keys</h1>
+        <section class="section-frame bg-white/95 backdrop-blur-sm">
+            <h1 class="heavy text-black text-xs tracking-[0.6em] mb-16">Step 02 / Access Keys</h1>
             <div class="w-full flex flex-col items-center gap-16">
                 <div class="w-full flex flex-col items-center">
-                    <label class="heavy text-[10px] text-orange-600/50 tracking-widest mb-2">API Username (Key)</label>
+                    <label class="heavy text-[10px] text-black/40 tracking-widest mb-2">API Username (Key)</label>
                     <input type="text" id="apiKey" 
-                           class="line-input !border-white/10 !text-white !text-3xl placeholder:text-white/5" 
+                           class="line-input !border-black !text-black !text-3xl placeholder:text-black/10" 
                            placeholder="E.G. API_USER_123" required>
                 </div>
                 <div class="w-full flex flex-col items-center">
-                    <label class="heavy text-[10px] text-orange-600/50 tracking-widest mb-2">API Password (Secret)</label>
+                    <label class="heavy text-[10px] text-black/40 tracking-widest mb-2">API Password (Secret)</label>
                     <input type="password" id="apiPass" 
-                           class="line-input !border-white/10 !text-white !text-3xl placeholder:text-white/5" 
+                           class="line-input !border-black !text-black !text-3xl placeholder:text-black/10" 
                            placeholder="••••••••••••" required>
                 </div>
             </div>
@@ -90,13 +88,13 @@
         <section class="section-frame">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.6em] mb-2">Step 03 / Course Manifest</h1>
             <input type="text" id="courseList" class="line-input mt-8" placeholder="COURSES (COMMA SEPARATED)" required>
-            <p class="text-[10px] uppercase tracking-widest mt-6 opacity-40 italic text-orange-600/70">Ensure 7+ course names listed</p>
+            <p class="text-[10px] uppercase tracking-widest mt-6 opacity-40 italic">List 7+ course names without emojis</p>
         </section>
 
-        <section class="section-frame bg-black border-l-8 border-orange-600/20 backdrop-blur-sm p-12 lg:p-24">
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.6em] mb-2">Step 04 / Group Structure</h1>
-            <input type="text" id="groupList" class="line-input !border-white/10 !text-white mt-8" placeholder="GROUPS (COMMA SEPARATED)" required>
-            <p class="text-[10px] uppercase tracking-widest mt-6 text-orange-600/70 italic">Ensure 3+ group names listed</p>
+        <section class="section-frame bg-white/95 backdrop-blur-sm">
+            <h1 class="heavy text-black text-xs tracking-[0.6em] mb-2">Step 04 / Group Structure</h1>
+            <input type="text" id="groupList" class="line-input !border-black !text-black mt-8" placeholder="GROUPS (COMMA SEPARATED)" required>
+            <p class="text-[10px] uppercase tracking-widest mt-6 text-black/40 italic">List 3+ group names as a comma separated list</p>
         </section>
 
         <section class="section-frame bg-orange-600">
