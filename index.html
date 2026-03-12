@@ -11,35 +11,34 @@
         body { background-color: #000; color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; scroll-behavior: smooth; }
         .heavy { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; line-height: 0.9; }
 
-        /* HUD & Progress Tracking */
+        /* HUD & Progress */
         #progressBar { position: fixed; top: 0; left: 0; height: 6px; background: var(--orange); box-shadow: 0 0 25px var(--orange); z-index: 100; transition: width 0.3s; width: 0%; }
         #missionClock { position: fixed; top: 2rem; right: 2rem; z-index: 60; font-family: 'Archivo Black'; font-size: 2rem; color: var(--orange); text-shadow: 0 0 15px var(--glow); }
 
-        /* Background Rocket Video (Ambient Mode) */
-        .ambient-video-wrapper { position: fixed; inset: 0; z-index: -2; opacity: 0.3; filter: saturate(0.5) brightness(0.6); pointer-events: none; }
+        /* Ambient YouTube Background (0s - 30s Loop) */
+        .ambient-wrapper { position: fixed; inset: 0; z-index: -2; opacity: 0.25; filter: saturate(0.5) brightness(0.4); pointer-events: none; }
         #ambientPlayer { width: 100%; height: 100%; transform: scale(1.5); }
 
         .section-frame { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; position: relative; }
 
-        /* Orange Calendar Icon Styling */
+        /* Orange Calendar Icon Fix */
         input[type="datetime-local"]::-webkit-calendar-picker-indicator {
             filter: invert(48%) sepia(85%) saturate(2478%) hue-rotate(346deg) brightness(101%) contrast(101%);
             cursor: pointer; font-size: 1.8rem;
         }
 
-        /* Black/Orange Input Theme */
         .line-input {
             background: transparent; border: none; border-bottom: 3px solid rgba(255, 255, 255, 0.2);
             font-family: 'Archivo Black', sans-serif; font-size: clamp(1.5rem, 5vw, 4rem);
             width: 80%; text-align: center; outline: none; transition: 0.5s;
             text-transform: uppercase; color: white;
         }
-        .line-input:focus { border-bottom-color: var(--orange); filter: drop-shadow(0 0 20px var(--glow)); transform: translateY(-5px); }
+        .line-input:focus { border-bottom-color: var(--orange); filter: drop-shadow(0 0 20px var(--glow)); }
 
-        /* Full Screen Launch Overlay */
-        #launchOverlay { position: fixed; inset: 0; background: #000; z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        #launchPlayer { position: absolute; inset: 0; z-index: 10; }
-        #countdownContainer { position: relative; z-index: 20; text-align: center; }
+        /* Launch Overlay */
+        #launchOverlay { position: fixed; inset: 0; background: #000; z-index: 200; display: none; align-items: center; justify-content: center; }
+        #starlinkVideo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 10; }
+        #countdownContainer { position: relative; z-index: 20; text-align: center; pointer-events: none; }
         
         .btn-launch {
             background: var(--orange); padding: 2rem 5rem; font-family: 'Archivo Black'; font-size: 2rem;
@@ -52,14 +51,14 @@
     <div id="progressBar"></div>
     <div id="missionClock">T-MINUS: 5</div>
 
-    <div class="ambient-video-wrapper">
+    <div class="ambient-wrapper">
         <div id="ambientPlayer"></div>
     </div>
 
     <form id="architectForm">
         <section class="section-frame" data-step="5">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Target Subdomain</h1>
-            <input type="text" id="subdomain" class="line-input" placeholder="PORTAL_ID" required>
+            <input type="text" class="line-input" placeholder="PORTAL_ID" required>
         </section>
 
         <section class="section-frame bg-black/80 backdrop-blur-xl border-y border-orange-600/10" data-step="4">
@@ -72,62 +71,62 @@
 
         <section class="section-frame" data-step="3">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Course Manifest</h1>
-            <input type="text" class="line-input" placeholder="COMMA_SEPARATED_LIST" required>
+            <input type="text" class="line-input" placeholder="MANIFEST_ID" required>
         </section>
 
         <section class="section-frame bg-black/80 backdrop-blur-xl border-y border-orange-600/10" data-step="2">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Group Architecture</h1>
-            <input type="text" class="line-input" placeholder="GROUPS_COMMA_SEPARATED" required>
+            <input type="text" class="line-input" placeholder="GROUPS_ID" required>
         </section>
 
         <section class="section-frame bg-gradient-to-t from-orange-950/60 to-black" data-step="1">
-            <h1 class="heavy text-white text-6xl italic mb-12 tracking-tighter">Final Ignition.</h1>
+            <h1 class="heavy text-white text-6xl italic mb-12 tracking-tighter">Ready for Orbit.</h1>
             <input type="datetime-local" class="line-input !text-3xl mb-16" required>
             <button type="submit" class="btn-launch heavy">INITIATE LAUNCH</button>
         </section>
     </form>
 
     <div id="launchOverlay">
-        <div id="launchPlayer"></div>
+        <video id="starlinkVideo" muted playsinline>
+            <source src="Starlink launch.mp4" type="video/mp4">
+        </video>
+        
         <div id="countdownContainer">
             <h1 id="cdText" class="heavy text-white text-[20vw] italic drop-shadow-[0_0_50px_var(--orange)]">5</h1>
             <p class="heavy text-orange-600 tracking-[1em]">POWERING PROPULSION</p>
         </div>
-        <div id="successMsg" class="hidden absolute z-30 text-center">
-            <h1 class="heavy text-white text-7xl">ORBIT ACHIEVED</h1>
+
+        <div id="successMsg" class="hidden absolute z-30 text-center bg-black/70 inset-0 flex flex-col items-center justify-center backdrop-blur-md">
+            <h1 class="heavy text-white text-7xl tracking-tighter">DEMO PORTAL LAUNCHED</h1>
             <button onclick="location.reload()" class="mt-8 border border-white/30 heavy px-8 py-4 text-xs hover:bg-white hover:text-black">REBOOT SYSTEM</button>
         </div>
     </div>
 
     <script>
-        // Load YouTube API
+        // YouTube API for Background
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        var ambientPlayer, launchPlayer;
-
+        var player;
         function onYouTubeIframeAPIReady() {
-            // Ambient Background Video (Loops 0:17 to 0:33 quietly)
-            ambientPlayer = new YT.Player('ambientPlayer', {
+            player = new YT.Player('ambientPlayer', {
                 height: '100%', width: '100%', videoId: 'C3iHAgwIYtI',
-                playerVars: { 'autoplay': 1, 'controls': 0, 'mute': 1, 'loop': 1, 'start': 17, 'end': 33, 'playlist': 'C3iHAgwIYtI' }
-            });
-
-            // Dramatic Launch Video
-            launchPlayer = new YT.Player('launchPlayer', {
-                height: '100%', width: '100%', videoId: 'C3iHAgwIYtI',
-                playerVars: { 'autoplay': 0, 'controls': 0, 'mute': 0, 'start': 17, 'end': 33 }
+                playerVars: { 'autoplay': 1, 'controls': 0, 'mute': 1, 'rel': 0, 'start': 0, 'end': 30 },
+                events: {
+                    'onStateChange': function(e) {
+                        if (e.data === YT.PlayerState.ENDED) { player.seekTo(0); player.playVideo(); }
+                    }
+                }
             });
         }
 
-        // Scroll Logic
+        // T-Minus Scroll Logic
         window.onscroll = () => {
             const winScroll = document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             document.getElementById("progressBar").style.width = (winScroll / height * 100) + "%";
-
             document.querySelectorAll('section').forEach(sec => {
                 const rect = sec.getBoundingClientRect();
                 if(rect.top >= -100 && rect.top <= window.innerHeight/2) {
@@ -136,16 +135,16 @@
             });
         };
 
-        // Submit Logic
+        // Launch logic
         document.getElementById('architectForm').onsubmit = (e) => {
             e.preventDefault();
             const overlay = document.getElementById('launchOverlay');
+            const video = document.getElementById('starlinkVideo');
             const cdText = document.getElementById('cdText');
             const success = document.getElementById('successMsg');
             
             overlay.style.display = 'flex';
-            launchPlayer.seekTo(17);
-            launchPlayer.playVideo();
+            video.play();
 
             let count = 5;
             const timer = setInterval(() => {
@@ -153,8 +152,10 @@
                 cdText.innerText = count;
                 if(count <= 0) {
                     clearInterval(timer);
-                    document.getElementById('countdownContainer').style.display = 'none';
-                    success.classList.remove('hidden');
+                    setTimeout(() => {
+                        document.getElementById('countdownContainer').classList.add('hidden');
+                        success.classList.remove('hidden');
+                    }, 4000); // Wait for the visual peak of the launch video
                 }
             }, 1000);
         };
