@@ -16,22 +16,28 @@
         #missionClock { position: fixed; top: 2rem; right: 2rem; z-index: 60; font-family: 'Archivo Black'; font-size: 2rem; color: var(--orange); text-shadow: 0 0 15px var(--glow); }
 
         /* Ambient YouTube Background (0s - 30s Loop) */
-        .ambient-wrapper { position: fixed; inset: 0; z-index: -2; opacity: 0.25; filter: saturate(0.5) brightness(0.4); pointer-events: none; }
-        #ambientPlayer { width: 100%; height: 100%; transform: scale(1.5); }
+        .ambient-wrapper { position: fixed; inset: 0; z-index: -2; opacity: 0.4; filter: saturate(0.7) brightness(0.5); pointer-events: none; }
+        #ambientPlayer { width: 100%; height: 100%; transform: scale(1.2); }
 
-        .section-frame { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; position: relative; }
+        /* Transparent Section Styling - No Black Backgrounds */
+        .section-frame { 
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; text-align: center; padding: 2rem; position: relative;
+            background: rgba(0,0,0,0.1); /* Minimal tint to keep text readable over video */
+        }
 
-        /* Orange Calendar Icon Fix */
+        /* Orange Calendar Icon */
         input[type="datetime-local"]::-webkit-calendar-picker-indicator {
             filter: invert(48%) sepia(85%) saturate(2478%) hue-rotate(346deg) brightness(101%) contrast(101%);
             cursor: pointer; font-size: 1.8rem;
         }
 
         .line-input {
-            background: transparent; border: none; border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+            background: transparent; border: none; border-bottom: 3px solid rgba(255, 255, 255, 0.4);
             font-family: 'Archivo Black', sans-serif; font-size: clamp(1.5rem, 5vw, 4rem);
             width: 80%; text-align: center; outline: none; transition: 0.5s;
             text-transform: uppercase; color: white;
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
         }
         .line-input:focus { border-bottom-color: var(--orange); filter: drop-shadow(0 0 20px var(--glow)); }
 
@@ -61,7 +67,7 @@
             <input type="text" class="line-input" placeholder="PORTAL_ID" required>
         </section>
 
-        <section class="section-frame bg-black/80 backdrop-blur-xl border-y border-orange-600/10" data-step="4">
+        <section class="section-frame" data-step="4">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-16">Security Clearance</h1>
             <div class="w-full flex flex-col items-center gap-12">
                 <input type="text" class="line-input !text-2xl" placeholder="API USERNAME" required>
@@ -74,12 +80,12 @@
             <input type="text" class="line-input" placeholder="MANIFEST_ID" required>
         </section>
 
-        <section class="section-frame bg-black/80 backdrop-blur-xl border-y border-orange-600/10" data-step="2">
+        <section class="section-frame" data-step="2">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Group Architecture</h1>
             <input type="text" class="line-input" placeholder="GROUPS_ID" required>
         </section>
 
-        <section class="section-frame bg-gradient-to-t from-orange-950/60 to-black" data-step="1">
+        <section class="section-frame" data-step="1">
             <h1 class="heavy text-white text-6xl italic mb-12 tracking-tighter">Ready for Orbit.</h1>
             <input type="datetime-local" class="line-input !text-3xl mb-16" required>
             <button type="submit" class="btn-launch heavy">INITIATE LAUNCH</button>
@@ -87,7 +93,7 @@
     </form>
 
     <div id="launchOverlay">
-        <video id="starlinkVideo" muted playsinline>
+        <video id="starlinkVideo" playsinline>
             <source src="Starlink launch.mp4" type="video/mp4">
         </video>
         
@@ -103,7 +109,7 @@
     </div>
 
     <script>
-        // YouTube API for Background
+        // YouTube Background Loop
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -135,7 +141,7 @@
             });
         };
 
-        // Launch logic
+        // Launch logic with Audio Activation
         document.getElementById('architectForm').onsubmit = (e) => {
             e.preventDefault();
             const overlay = document.getElementById('launchOverlay');
@@ -144,6 +150,8 @@
             const success = document.getElementById('successMsg');
             
             overlay.style.display = 'flex';
+            video.muted = false; // Enable audio upon user interaction
+            video.volume = 1.0;
             video.play();
 
             let count = 5;
@@ -155,7 +163,7 @@
                     setTimeout(() => {
                         document.getElementById('countdownContainer').classList.add('hidden');
                         success.classList.remove('hidden');
-                    }, 4000); // Wait for the visual peak of the launch video
+                    }, 5000); 
                 }
             }, 1000);
         };
