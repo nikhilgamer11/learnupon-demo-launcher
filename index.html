@@ -28,7 +28,7 @@
             background: transparent; border: none; border-bottom: 5px solid white;
             font-family: 'Archivo Black', sans-serif; font-size: clamp(1.5rem, 5vw, 4rem);
             width: 85%; text-align: center; outline: none; transition: 0.4s;
-            text-transform: uppercase; color: white; margin-top: 2rem;
+            text-transform: uppercase; color: white;
         }
         .line-input:focus { border-bottom-color: var(--orange); transform: scale(1.02); }
         .line-input::placeholder { color: rgba(255,255,255,0.05); }
@@ -64,27 +64,42 @@
     <form id="architectForm">
         <section class="section-frame">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.6em] mb-2">Step 01 / Target Subdomain</h1>
-            <input type="text" id="subdomain" class="line-input" placeholder="PORTAL NAME" required>
+            <input type="text" id="subdomain" class="line-input mt-8" placeholder="PORTAL NAME" required>
         </section>
 
         <section class="section-frame bg-white/95 backdrop-blur-sm">
-            <h1 class="heavy text-black text-xs tracking-[0.6em] mb-2">Step 02 / Access Keys</h1>
-            <div class="w-full flex flex-col items-center gap-8">
-                <input type="text" id="apiKey" class="line-input !border-black !text-black !text-3xl" placeholder="API KEY" required>
-                <input type="password" id="apiPass" class="line-input !border-black !text-black !text-3xl" placeholder="API PASSWORD" required>
+            <h1 class="heavy text-black text-xs tracking-[0.6em] mb-16">Step 02 / Access Keys</h1>
+            <div class="w-full flex flex-col items-center gap-16">
+                <div class="w-full flex flex-col items-center">
+                    <label class="heavy text-[10px] text-black/40 tracking-widest mb-2">API Username (Key)</label>
+                    <input type="text" id="apiKey" 
+                           class="line-input !border-black !text-black !text-3xl placeholder:text-black/10" 
+                           placeholder="E.G. API_USER_123" required>
+                </div>
+                <div class="w-full flex flex-col items-center">
+                    <label class="heavy text-[10px] text-black/40 tracking-widest mb-2">API Password (Secret)</label>
+                    <input type="password" id="apiPass" 
+                           class="line-input !border-black !text-black !text-3xl placeholder:text-black/10" 
+                           placeholder="••••••••••••" required>
+                </div>
             </div>
         </section>
 
         <section class="section-frame">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.6em] mb-2">Step 03 / Course Manifest</h1>
-            <input type="text" id="courseList" class="line-input" placeholder="COURSES (COMMA SEPARATED)" required>
-            <p class="text-[10px] uppercase tracking-widest mt-4 opacity-40">Ensure 7+ courses for full deployment</p>
+            <input type="text" id="courseList" class="line-input mt-8" placeholder="COURSES (COMMA SEPARATED)" required>
+            <p class="text-[10px] uppercase tracking-widest mt-6 opacity-40 italic">List 7+ course names without emojis</p>
+        </section>
+
+        <section class="section-frame bg-white/95 backdrop-blur-sm">
+            <h1 class="heavy text-black text-xs tracking-[0.6em] mb-2">Step 04 / Group Structure</h1>
+            <input type="text" id="groupList" class="line-input !border-black !text-black mt-8" placeholder="GROUPS (COMMA SEPARATED)" required>
+            <p class="text-[10px] uppercase tracking-widest mt-6 text-black/40 italic">List 3+ group names as a comma separated list</p>
         </section>
 
         <section class="section-frame bg-orange-600">
             <h1 class="heavy text-white text-5xl mb-12 italic tracking-tighter">Ready for Orbit.</h1>
             <input type="datetime-local" id="liveDate" class="line-input !border-white !text-2xl mb-12" required>
-            
             <button type="submit" id="submitBtn" class="btn-launch">INITIATE LAUNCH</button>
             <p id="status" class="mt-8 font-black uppercase text-[10px] tracking-[0.4em] text-black h-4"></p>
         </section>
@@ -103,19 +118,16 @@
             const status = document.getElementById('status');
             const overlay = document.getElementById('ignition');
             
-            // 1. Validation Logic
             const sub = document.getElementById('subdomain').value.trim();
             if (sub.includes('.') || sub.includes(' ')) {
                 status.innerText = "ERROR: SUBDOMAIN MUST BE A SINGLE WORD";
                 return;
             }
 
-            // 2. Start Sequence
             btn.innerText = "LAUNCHING...";
             status.innerText = "ESTABLISHING API SECURE CHANNEL...";
             overlay.style.display = 'flex';
 
-            // 3. Physical Shake Effect
             let intensity = 0;
             const shake = setInterval(() => {
                 intensity = Math.min(intensity + 0.3, 12);
@@ -124,20 +136,17 @@
                 document.body.style.transform = `translate(${x}px, ${y}px)`;
             }, 30);
 
-            // 4. Payload Generation
             const payload = {
                 subdomain: sub.toLowerCase(),
                 apiKey: document.getElementById('apiKey').value.trim(),
                 apiPass: document.getElementById('apiPass').value.trim(),
                 courses: document.getElementById('courseList').value.split(',').map(s => s.trim()),
+                groups: document.getElementById('groupList').value.split(',').map(s => s.trim()),
                 liveDate: document.getElementById('liveDate').value
             };
 
-            // 5. Transmission
             try {
-                await fetch(GAS_URL, { 
-                    method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) 
-                });
+                await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
                 
                 setTimeout(() => {
                     clearInterval(shake);
