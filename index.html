@@ -8,25 +8,42 @@
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;900&display=swap" rel="stylesheet">
     <style>
         :root { --orange: #FF4D00; --glow: rgba(255, 77, 0, 0.8); }
-        body { background-color: #000; color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
+        body { background-color: #000; color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; scroll-behavior: smooth; }
         .heavy { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; line-height: 0.9; }
 
-        #progressBar { position: fixed; top: 0; left: 0; height: 6px; background: var(--orange); box-shadow: 0 0 25px var(--orange); z-index: 100; width: 0%; transition: width 0.3s; }
+        /* HUD & Progress Tracking */
+        #progressBar { position: fixed; top: 0; left: 0; height: 6px; background: var(--orange); box-shadow: 0 0 25px var(--orange); z-index: 100; transition: width 0.3s; width: 0%; }
         #missionClock { position: fixed; top: 2rem; right: 2rem; z-index: 60; font-family: 'Archivo Black'; font-size: 2rem; color: var(--orange); text-shadow: 0 0 15px var(--glow); }
-        
-        .section-frame { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; }
+
+        /* Ambient Background Loop */
+        .ambient-wrapper { position: fixed; inset: 0; z-index: -2; opacity: 0.4; filter: saturate(0.7) brightness(0.5); pointer-events: none; }
+        #ambientPlayer { width: 100%; height: 100%; transform: scale(1.2); }
+
+        /* Transparent Overlay Layout */
+        .section-frame { 
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; text-align: center; padding: 2rem; position: relative;
+        }
+
+        /* Orange Calendar Indicator */
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(48%) sepia(85%) saturate(2478%) hue-rotate(346deg) brightness(101%) contrast(101%);
+            cursor: pointer; font-size: 1.8rem;
+        }
 
         .line-input {
             background: transparent; border: none; border-bottom: 3px solid rgba(255, 255, 255, 0.4);
             font-family: 'Archivo Black', sans-serif; font-size: clamp(1.5rem, 5vw, 4rem);
             width: 80%; text-align: center; outline: none; transition: 0.5s;
             text-transform: uppercase; color: white;
+            text-shadow: 0 0 15px rgba(0,0,0,1);
         }
         .line-input:focus { border-bottom-color: var(--orange); filter: drop-shadow(0 0 20px var(--glow)); }
 
-        /* THE OVERLAY YOU LIKED */
+        /* Post-Launch Overlay */
         #launchOverlay { position: fixed; inset: 0; background: #000; z-index: 200; display: none; align-items: center; justify-content: center; }
-        #starlinkVideo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 10; opacity: 0.6; }
+        #starlinkVideo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 10; }
+        #countdownContainer { position: relative; z-index: 20; text-align: center; }
         
         .btn-launch {
             background: var(--orange); padding: 2rem 5rem; font-family: 'Archivo Black'; font-size: 2rem;
@@ -39,106 +56,114 @@
     <div id="progressBar"></div>
     <div id="missionClock">T-MINUS: 5</div>
 
+    <div class="ambient-wrapper">
+        <div id="ambientPlayer"></div>
+    </div>
+
     <form id="architectForm">
         <section class="section-frame" data-step="5">
-            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Commander & Portal</h1>
-            <input type="email" id="commander_email" class="line-input !text-2xl mb-8" placeholder="YOUR_EMAIL@DOMAIN.COM" required>
-            <input type="text" id="subdomain" class="line-input" placeholder="PORTAL_SUBDOMAIN" required>
+            <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Target Subdomain</h1>
+            <input type="text" class="line-input" placeholder="PORTAL_ID" required>
         </section>
 
         <section class="section-frame" data-step="4">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-16">Security Clearance</h1>
-            <input type="text" id="api_user" class="line-input !text-2xl mb-8" placeholder="API KEY" required>
-            <input type="password" id="api_pass" class="line-input !text-2xl" placeholder="API SECRET" required>
+            <div class="w-full flex flex-col items-center gap-12">
+                <input type="text" class="line-input !text-2xl" placeholder="API USERNAME" required>
+                <input type="password" class="line-input !text-2xl" placeholder="API PASSWORD" required>
+            </div>
         </section>
 
         <section class="section-frame" data-step="3">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Course Manifest</h1>
-            <input type="text" id="courses" class="line-input" placeholder="COURSE NAME" required>
+            <input type="text" class="line-input" placeholder="MANIFEST_ID" required>
         </section>
 
         <section class="section-frame" data-step="2">
             <h1 class="heavy text-orange-600 text-xs tracking-[0.8em] mb-4">Group Architecture</h1>
-            <input type="text" id="groups" class="line-input" placeholder="GROUP NAME" required>
+            <input type="text" class="line-input" placeholder="GROUPS_ID" required>
         </section>
 
         <section class="section-frame" data-step="1">
-            <h1 class="heavy text-white text-6xl italic mb-12">Final Ignition.</h1>
-            <button type="submit" id="launchBtn" class="btn-launch heavy">INITIATE LAUNCH</button>
+            <h1 class="heavy text-white text-6xl italic mb-12 tracking-tighter">Ready for Orbit.</h1>
+            <input type="datetime-local" class="line-input !text-3xl mb-16" required>
+            <button type="submit" class="btn-launch heavy">INITIATE LAUNCH</button>
         </section>
     </form>
 
     <div id="launchOverlay">
-        <video id="starlinkVideo" playsinline muted loop>
+        <video id="starlinkVideo" playsinline>
             <source src="Starlink launch.mp4" type="video/mp4">
         </video>
-        <div class="relative z-20 text-center">
-            <h1 id="statusText" class="heavy text-white text-5xl italic">IGNITION CONFIRMED...</h1>
-            <div id="countdownCircle" class="mt-8 text-white heavy text-[12rem]"></div>
+        
+        <div id="countdownContainer">
+            <h1 id="cdText" class="heavy text-white text-[20vw] italic drop-shadow-[0_0_50px_var(--orange)]">5</h1>
+            <p class="heavy text-orange-600 tracking-[1em]">ENGAGING THRUSTERS</p>
+        </div>
+
+        <div id="successMsg" class="hidden absolute z-30 text-center bg-black/60 inset-0 flex flex-col items-center justify-center backdrop-blur-md">
+            <h1 class="heavy text-white text-7xl tracking-tighter">DEMO PORTAL LAUNCHED</h1>
+            <button onclick="location.reload()" class="mt-8 border border-white/30 heavy px-8 py-4 text-xs hover:bg-white hover:text-black">REBOOT SYSTEM</button>
         </div>
     </div>
 
     <script>
-        // Use your newest Deployment URL here
-        const SCRIPT_URL = 'https://script.google.com/a/macros/learnupon.com/s/AKfycbyheX43gNnTcn0KS3fqmx7cHFCYXVqUP3nlDZzZ2vcB77ggkk8FDkSGcGpMj8SZYF7k5g/exec';
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        document.getElementById('architectForm').onsubmit = (e) => {
-            e.preventDefault();
-            
-            const overlay = document.getElementById('launchOverlay');
-            const video = document.getElementById('starlinkVideo');
-            const countdown = document.getElementById('countdownCircle');
-            const status = document.getElementById('statusText');
-
-            // Start Cinematic Experience
-            overlay.style.display = 'flex';
-            video.play();
-
-            const payload = {
-                commander: document.getElementById('commander_email').value,
-                subdomain: document.getElementById('subdomain').value,
-                username: document.getElementById('api_user').value,
-                password: document.getElementById('api_pass').value,
-                courses: document.getElementById('courses').value,
-                groups: document.getElementById('groups').value
-            };
-
-            // SILENT BACKGROUND TRANSMISSION
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify(payload)
-            }).catch(e => console.log("Silent transmission active. Check sheet logs."));
-
-            // RESTORED PERFECT COUNTDOWN
-            let timeLeft = 5;
-            countdown.innerText = timeLeft;
-
-            const timer = setInterval(() => {
-                timeLeft--;
-                countdown.innerText = timeLeft;
-
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    status.innerText = "ORBIT ACHIEVED";
-                    status.style.color = "#4ADE80";
-                    countdown.innerText = "✓";
-                    setTimeout(() => { location.reload(); }, 4000);
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('ambientPlayer', {
+                height: '100%', width: '100%', videoId: 'C3iHAgwIYtI',
+                playerVars: { 'autoplay': 1, 'controls': 0, 'mute': 1, 'rel': 0, 'start': 0, 'end': 30 },
+                events: {
+                    'onStateChange': function(e) {
+                        if (e.data === YT.PlayerState.ENDED) { player.seekTo(0); player.playVideo(); }
+                    }
                 }
-            }, 1000);
-        };
+            });
+        }
 
         window.onscroll = () => {
             const winScroll = document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             document.getElementById("progressBar").style.width = (winScroll / height * 100) + "%";
-            
             document.querySelectorAll('section').forEach(sec => {
                 const rect = sec.getBoundingClientRect();
                 if(rect.top >= -100 && rect.top <= window.innerHeight/2) {
                     document.getElementById('missionClock').innerText = `T-MINUS: ${sec.dataset.step}`;
                 }
             });
+        };
+
+        // Precision Sequence [0:25 to 0:32]
+        document.getElementById('architectForm').onsubmit = (e) => {
+            e.preventDefault();
+            const overlay = document.getElementById('launchOverlay');
+            const video = document.getElementById('starlinkVideo');
+            const cdText = document.getElementById('cdText');
+            const success = document.getElementById('successMsg');
+            
+            overlay.style.display = 'flex';
+            video.currentTime = 25; // Start at 25s
+            video.muted = false;
+            video.play();
+
+            let count = 5;
+            const timer = setInterval(() => {
+                count--;
+                cdText.innerText = count;
+                if(count <= 0) {
+                    clearInterval(timer);
+                    // At 32s (7 seconds later), show success message
+                    setTimeout(() => {
+                        document.getElementById('countdownContainer').classList.add('hidden');
+                        success.classList.remove('hidden');
+                    }, 2000); 
+                }
+            }, 1000);
         };
     </script>
 </body>
